@@ -1,4 +1,8 @@
 
+/* ==========================================================================
+   CINEMAX - HOME PAGE STYLES (FULLY RESPONSIVE)
+   ========================================================================== */
+
 @font-face {
   font-family: "SF Pro";
   src: url("../fonts/sf-pro-display/SFPRODISPLAYBOLD.OTF") format("truetype");
@@ -14,54 +18,48 @@
   src: url("../fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF") format("truetype");
 }
 
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --bg-dark: #070a14;
+  --card-bg: rgba(255, 255, 255, 0.06);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body, html {
+html, body {
   width: 100%;
-  height:auto;
+  min-height: 100%;
   margin: 0;
   padding: 0;
-  font-family: "SF Pro", sans-serif;
-  background-color: black;
+  font-family: "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #000000;
+  color: #ffffff;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Make container flex so footer sticks at bottom */
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  margin: 0;
 }
 
-/* Dashboard stretches to fill remaining space */
 .container {
   flex: 1;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
-
-/* ===================== NAV BAR ===================== */
-/* Navbar default (hidden on landing) */
-.navbar {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.6s ease;
-}
-
-/* Navbar becomes visible after landing slides up */
-.navbar.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-
-/* ===================== LANDING PAGE ===================== */
+/* ==========================================================================
+   LANDING PAGE (HERO INTRO)
+   ========================================================================== */
 .landing {
   position: absolute;
   top: 0;
@@ -74,89 +72,107 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  transition: transform 1s ease-in-out;
-  z-index: 3;
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: 5;
+  padding: 1.5rem;
 }
 
 .landing.slide-up {
   transform: translateY(-100%);
+  pointer-events: none;
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.75) 100%);
 }
 
-.content {
+.landing .content {
   position: relative;
   z-index: 2;
   color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .Llogo-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: clamp(8px, 2vw, 16px);
 }
 
 .Llogo {
-  width: 80px;
+  width: clamp(45px, 8vw, 85px);
+  height: auto;
+  filter: drop-shadow(0 0 16px rgba(37, 99, 235, 0.5));
 }
 
 .title {
-  font-size: 6rem;
+  font-size: clamp(2.8rem, 9vw, 6.5rem);
   font-weight: 700;
   color: white;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
 .subtitle {
-  font-family: "SF Medium";
-  font-size: 1.3rem;
-  color: #ddd;
+  font-family: "SF Medium", sans-serif;
+  font-size: clamp(0.95rem, 2.5vw, 1.35rem);
+  color: #e2e8f0;
   margin-top: 0.5rem;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
 }
 
 .arrow {
   position: absolute;
-  bottom: 80px;
-  font-size: 2rem;
+  bottom: clamp(30px, 6vh, 70px);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
   color: white;
   cursor: pointer;
-  animation: bounce 1.5s infinite;
+  animation: bounce 1.8s infinite;
   z-index: 2;
-  transition: transform 0.8s ease, opacity 0.6s ease;
+  transition: transform 0.6s ease, opacity 0.5s ease;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.c-right .movie-facts-container {
-  margin-top: 30px;
+.arrow:hover {
+  background: rgba(37, 99, 235, 0.4);
+  border-color: rgba(96, 165, 250, 0.6);
 }
 
-.movie-facts-container {
-  margin-top: 30px;
-  opacity: 0.9;
+.arrow.slide-away {
+  opacity: 0;
+  transform: translateY(30px);
 }
 
-/* ===================== DASHBOARD CONTENT SECTION ===================== */
+/* ==========================================================================
+   DASHBOARD SECTION
+   ========================================================================== */
 .dashboard {
   position: relative;
-  top: 0;
-  left: 0;
-
   width: 100%;
   min-height: 100vh;
-
-  background: linear-gradient(-180deg, #000000 0%, #0a213d 100%);
+  background: linear-gradient(180deg, #030611 0%, #08152e 50%, #030611 100%);
   color: white;
-
-  padding-top: 0px;
-  padding-bottom: 30px;
+  padding-top: 80px;
+  padding-bottom: 2rem;
   opacity: 0;
-  
-  overflow-y: auto;
-  transform: translateY(50px);
-  transition: opacity 1s ease, transform 1s ease;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 2;
 }
 
@@ -165,44 +181,22 @@ body {
   transform: translateY(0);
 }
 
-
-.dashboard-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-}
-
-.dashboard-info {
-  flex: 1 1 40%;
-}
-
-.dashboard-data {
-  flex: 1 1 55%;
-  background: #1b1b1b;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
-}
-
+/* ==========================================================================
+   CINEMAX INTRO / HERO INFO SECTION
+   ========================================================================== */
 .c-section {
   width: 100%;
-  height: 72vh; 
+  min-height: 60vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  
-  margin-top: 5%;
-
-  /* background: url("../images/background.png") center/cover no-repeat; */
   position: relative;
   overflow: hidden;
-  color: white;
+  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 5vw, 4rem);
+  margin-top: 1rem;
 }
 
-/* 🎞️ Moving Film Strip Background */
+/* Film Strip Moving Background */
 .c-section .film-strip-bg {
   position: absolute;
   top: 0;
@@ -210,595 +204,474 @@ body {
   width: 300%;
   height: 100%;
   background: 
-    url("../images/filmstrip.png") repeat-x, /* moving film layer */
+    url("../images/filmstrip.png") repeat-x,
     url("../images/homebg1.jpg") no-repeat center center fixed;
   background-size: contain, cover;
-  animation: moveFilm 30s linear infinite;
-  opacity: 0.90;
+  animation: moveFilm 35s linear infinite;
+  opacity: 0.3;
   z-index: 0;
 }
 
-/* 🎥 Animation for film scrolling */
 @keyframes moveFilm {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* Make sure content stays above film background */
-.c-section > *:not(.film-strip-bg) {
-  position: relative;
-  z-index: 2;
-}
-
-
-/* Add more space above the right-side text */
-.c-right {
-  padding-top: 90px; 
-}
-
-/* Keep nice distance between text and Movie Fact box */
-.c-right p {
-  margin-top: 8%;
-  margin-bottom: 60px;
-
-  text-align: justify;
-}
-
-/* Give the movie fact box breathing room */
-.c-right .movie-facts-container {
-  margin-top: 40px !important;
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .c-section::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
+  background: radial-gradient(circle at center, rgba(5, 9, 23, 0.75) 0%, rgba(3, 6, 17, 0.92) 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 1;
 }
 
-.c-section > * {
+.c-section > *:not(.film-strip-bg) {
   position: relative;
   z-index: 2;
 }
 
 .c-left, .c-right {
   flex: 1;
-  padding: 0 5%;
+  padding: 0 clamp(0.5rem, 2vw, 2rem);
 }
 
 .c-left {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-
-  align-items: center;
+  gap: 0.8rem;
+  align-items: flex-start;
 }
 
 .c-logo {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: clamp(8px, 1.5vw, 16px);
 }
 
 .c-logo img {
-  width: 78px;
+  width: clamp(48px, 7vw, 75px);
+  height: auto;
+  filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.5));
 }
 
 .c-logo h2 {
-  font-size: 5.6rem;
+  font-size: clamp(2.8rem, 6vw, 5rem);
   font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .c-tagline {
-  font-size: 1rem;
-  color: #ddd;
-
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: #94a3b8;
   font-family: "SF Medium", sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .c-right {
-  max-width: 95%;
-  
-  line-height: 1.7;
-  text-align: center;
-
-  font-family: "SF Medium", sans-serif;
-  font-size: 1rem;
-  color: #dfdfdf;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* DASHBOARD OTHER CONTENT */
-.side-logo {
+.c-right p {
+  font-family: "SF Light", sans-serif;
+  font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+  line-height: 1.7;
+  color: #cbd5e1;
+  text-align: justify;
+}
+
+/* Fun Reel Facts Box */
+.movie-facts-container {
+  text-align: center;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: clamp(1.2rem, 3vw, 2rem);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.movie-facts-container:hover {
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.movie-facts-container h3 {
+  font-family: "SF Pro", sans-serif;
+  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+  margin-bottom: 0.5rem;
+  color: #60a5fa;
+}
+
+#movieFact {
+  font-family: "SF Medium", sans-serif;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  margin-bottom: 1.2rem;
+  color: #e2e8f0;
+  line-height: 1.5;
+  min-height: 48px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
 }
 
-.logo-small {
-  width: 60px;
+#factBtn {
+  padding: 0.75rem 1.75rem;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  border: none;
+  color: white;
+  font-family: "SF Medium", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4);
 }
 
-.title-small {
-  font-size: 2.2rem;
+#factBtn:hover {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
 }
 
-.app-description {
-  margin-top: 1rem;
-  color: #ccc;
-  line-height: 1.6;
-  font-size: 1rem;
+#factBtn:active {
+  transform: translateY(0);
 }
 
-/* ===================== CUSTOM SCROLLBAR ===================== */
-
-/* Chrome, Edge, Safari */
-::-webkit-scrollbar {
-  width: 8px; 
-}
-
-::-webkit-scrollbar-track {
-  background: transparent; 
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2); 
-  border-radius: 10px;
-  transition: background 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4); 
-}
-
-/* Firefox support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-}
-
-
-/* ===================== RESPONSIVE DASHBOARD ========================= */
-@media (max-width: 768px) {
-  .c-right {
-    padding-top: 100px; 
-  }
-
-  .c-right p {
-    margin-bottom: 80px;
-  }
-
-  .c-right .movie-facts-container {
-    margin-top: 60px !important;
-  }
-
-   .c-section {
-    flex-direction: column;
-    text-align: center;
-    height: auto;
-    padding: 3rem 1.5rem;
-  }
-
-  .c-section .film-strip-bg {
-    width: 400%; /* extend for smaller devices */
-    opacity: 0.4;
-  }
-
-  .c-left, .c-right {
-    width: 100%;
-  }
-}
-
-@media (max-width: 1024px) {
-  .c-section {
-    flex-direction: column;
-    text-align: center;
-    height: auto;
-    padding: 5rem 2rem;
-  }
-
-  .c-left, .c-right {
-    padding: 0;
-    max-width: 100%;
-  }
-
-  .c-logo h2 {
-    font-size: 3rem;
-
-    font-family: "SF Medium", sans-serif;
-  }
-
-  .c-logo img {
-    width: 70px;
-  }
-
-  .c-right p {
-    opacity: 0.6;
-  }
-}
-
-@media (max-width: 768px) {
-  .c-section {
-    height: auto;
-    padding: 5rem 1rem;
-  }
-
-  .c-logo h2 {
-    font-size: 2.5rem;
-
-    font-family: "SF Medium", sans-serif;
-  }
-
-  .c-right p {
-    font-size: 0.95rem;
-    padding-top: 3%;
-    padding-left: 5%;
-
-    font-family: "SF Light", sans-serif;
-
-    opacity: 0.6;
-  }
-}
-/* ===================================================================== */
-
-
-/* ===================== MOVIE MOOD WEATHER SECTION ===================== */
+/* ==========================================================================
+   MOVIE MOOD WEATHER SECTION
+   ========================================================================== */
 .movie-mood-weather {
-  margin-top: 2%;
-  padding: 60px 0px 20px 40px;
+  width: 100%;
+  max-width: 1300px;
+  margin: 2rem auto;
+  padding: 0 clamp(1.2rem, 4vw, 3rem);
   color: white;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
-/* Main Layout */
 .weather-container {
   width: 100%;
-  max-width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10%;
-  margin-bottom: 40px;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin-bottom: 2.5rem;
 }
 
-/* LEFT SIDE */
 .weather-left {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: 0.6rem;
 }
 
 .weather-left h2 {
-  font-size: 2.8rem;
-  font-weight: 600;
-  font-family: "SF Pro", sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .weather-left .subtitle {
-  opacity: 0.85;
-  margin-top: 5px;
-  margin-bottom: 20px;
-  margin-left: 2.5%;
+  color: #94a3b8;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  margin-bottom: 1rem;
 }
 
 .refresh-container {
   display: flex;
-  justify-content: left;
   width: 100%;
 }
 
 #refreshMoodBtn {
-  padding: 18px 28px;
-  margin-left: 2.5%;
-  
-  border-radius: 25px;
-  background: #1D3770;
-  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;
-
   cursor: pointer;
-  transition: 0.3s;
-
-  font-size: medium;
+  transition: all 0.25s ease;
+  font-size: 0.95rem;
   font-family: "SF Medium", sans-serif;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 #refreshMoodBtn:hover {
-  background: #0039ff;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
-/* RIGHT SIDE - WEATHER CARD */
+/* Weather Stats Card (Right Side) */
 .weather-right {
   flex: 1;
-  position: relative; /* for overlay */
-  background: rgba(255, 255, 255, 0.08);
-  padding: 28px 30px;
-  border-radius: 16px;
-  backdrop-filter: blur(6px);
-  overflow: hidden;
-  transition: background-image 0.8s ease-in-out, background-color 0.5s ease;
-  background-size: cover;
-  background-position: center;
-  backdrop-filter: blur(6px); /* keeps your glass effect */
-}
-
-/* Optional overlay for better readability */
-.weather-right::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3); /* slight dark tint for contrast */
-  backdrop-filter: blur(8px); /* this blurs the background image itself */
-  border-radius: 16px;
-  z-index: 0;
-}
-
-.weather-header,
-.mood-text,
-.movie-suggestion-text {
+  max-width: 500px;
   position: relative;
-  z-index: 1; /* Make sure text is above overlay */
-  font-size: 1.5rem;
+  background: rgba(15, 23, 42, 0.7);
+  padding: clamp(1.2rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: all 0.5s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .weather-header {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  gap: 0.5rem;
   font-weight: 600;
-  margin-bottom: 0px;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  margin-bottom: 0.5rem;
 }
 
 #weatherIcon {
-  width: 80px;
-  height: 80px;
+  width: clamp(55px, 8vw, 75px);
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+#weatherTemp {
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+#weatherLocation {
+  color: #f1f5f9;
 }
 
 .mood-text {
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
   font-family: "SF Medium", sans-serif;
-  margin-top: -5px;
-  opacity: 0.9;
+  color: #f8fafc;
   text-align: center;
+  margin-top: 0.3rem;
 }
 
 .movie-suggestion-text {
-  font-size: 0.9rem;
-  font-family: "SF Medium", sans-serif;
-  margin-top: 10px;
-
-  opacity: 0.9;
+  font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+  font-family: "SF Light", sans-serif;
+  color: #94a3b8;
+  margin-top: 0.5rem;
   text-align: center;
+  line-height: 1.5;
 }
-/* SUGGESTED MOVIES GRID */
+
+/* Suggested Movies Section */
 .suggested-section {
-  margin-top: 30px; 
-  margin-bottom: 1%;
-  text-align: left;
-  width: 90%;
+  margin-top: 2rem;
+  width: 100%;
 }
 
 .suggested-title {
-  width: 100%;
-  max-width: 1200px;
-  text-align: left;
+  font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+  font-weight: 600;
+  color: #f1f5f9;
   margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: 400;
-  font-family: "SF Pro", sans-serif;
 }
 
 .movie-list {
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
-  padding: 10px 0;
-}
-
-.movie-list::-webkit-scrollbar {
-  height: 6px;
-}
-
-.movie-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-
-.movie-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  padding: 0.5rem 0.25rem 1rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
 }
 
 .movie-card {
-  flex: 0 0 auto;       /* prevents shrinking */
-  width: 120px;         /* smaller width */
+  flex: 0 0 clamp(120px, 28vw, 160px);
   text-align: center;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  scroll-snap-align: start;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
+}
+
+.movie-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(37, 99, 235, 0.3);
+  border-color: rgba(96, 165, 250, 0.4);
 }
 
 .movie-card img {
   width: 100%;
-  border-radius: 10px;
-  height: 180px;        /* fixed smaller height */
+  height: clamp(170px, 38vw, 230px);
+  border-radius: 10px 10px 0 0;
   object-fit: cover;
+  display: block;
 }
 
 .movie-card p {
   font-size: 0.85rem;
-  color: #fff;
-  margin-top: 6px;
+  color: #e2e8f0;
+  margin-top: 8px;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-
-.movie-card:hover {
-  transform: scale(1.05);
-}
-
-/* SEE MORE BUTTON */
 .see-more-container {
-  width: 88%; 
+  width: 100%;
   display: flex;
-  justify-content: flex-end; 
+  justify-content: flex-end;
+  margin-top: 0.5rem;
 }
 
 .see-more-btn {
-  padding: 12px 24px;
-  background: none;
-  border: none;
-  font-size: large;
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-size: 0.95rem;
   font-family: "SF Medium", sans-serif;
-  color: white;
+  color: #94a3b8;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.25s ease;
 }
 
 .see-more-btn:hover {
-  opacity: 0.7;
-  color: #0046f6;
+  color: #ffffff;
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.12);
+  transform: translateX(4px);
 }
 
+/* ==========================================================================
+   CUSTOM SCROLLBARS & ANIMATIONS
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
-/* ===================== WEATHER AND MOVIERESPONSIVE ===================== */
-/* Tablets */
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Tablets & Laptops (<= 992px) */
 @media (max-width: 992px) {
+  .c-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 2.5rem;
+    padding: 3rem 1.5rem;
+  }
+
+  .c-left {
+    align-items: center;
+  }
+
+  .c-right p {
+    text-align: center;
+  }
+
   .weather-container {
     flex-direction: column;
     text-align: center;
-    ;
+    gap: 2rem;
   }
 
   .weather-left {
+    align-items: center;
     text-align: center;
-    margin-bottom: 10%;
+  }
+
+  .refresh-container {
+    justify-content: center;
   }
 
   .weather-right {
+    max-width: 100%;
     width: 100%;
-    max-width: 500px;
-    text-align: center;
-  }
-
-  .weather-header {
-    justify-content: center;
   }
 
   .suggested-title {
     text-align: center;
   }
+}
 
-  .movie-list {
+/* Small Tablets & Mobile (<= 768px) */
+@media (max-width: 768px) {
+  .dashboard {
+    padding-top: 70px;
+  }
+
+  .c-section {
+    padding: 2.5rem 1rem;
+    margin-top: 0;
+  }
+
+  .c-section .film-strip-bg {
+    width: 450%;
+  }
+
+  .movie-mood-weather {
+    padding: 0 1rem;
+  }
+}
+
+/* Small Phones (<= 480px) */
+@media (max-width: 480px) {
+  .landing {
+    padding: 1rem;
+  }
+
+  .c-section {
+    padding: 2rem 0.75rem;
+  }
+
+  .c-logo {
+    gap: 8px;
+  }
+
+  .movie-facts-container {
+    padding: 1.2rem 0.9rem;
+  }
+
+  .see-more-container {
     justify-content: center;
   }
-}
-
-/* =====================OVERRIDE CODE */
-
-/* ===================== MOVIE FACTS & TRIVIA ===================== */
-.movie-facts-container {
-  text-align: center;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 30px 40px;
-  margin: 50px auto;
-  max-width: 700px;
-  color: white;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
-}
-
-.movie-facts-container h3 {
-  font-family: "SF Pro", sans-serif;
-  font-size: 2rem;
-  margin-bottom: 5px;
-}
-
-#movieFact {
-  font-family: "SF Medium", sans-serif;
-  font-size: 1.3rem;
-  margin-bottom: 25px;
-  margin-top: 0px;
-  text-align: center;
-  color: #ddd;
-  opacity: 0.9;
-
-}
-
-#factBtn {
-  padding: 12px 25px;
-  background: #00268f;
-  border: none;
-  color: white;
-  font-family: "SF Medium", sans-serif;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-#factBtn:hover {
-  background: #0046f6;
-  transform: scale(1.05);
-}
-
-
-/* Mobile */
-@media (max-width: 600px) {
-  .movie-mood-weather {
-    padding: 40px 20px;
-  }
-
-  .weather-left h2 {
-    font-size: 1.7rem;
-  }
-
-  #refreshMoodBtn {
-    width: 100%;
-  }
-
-  .movie-card {
-    width: 120px;
-  }
-}
-
-
-
-
-/* ===================== RESPONSIVE ALL ===================== */
-/* ANIMATIONS */
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(10px); }
-}
-
-/* RESPONSIVE */
-@media (max-width: 1366px) {
-  .title { font-size: 5rem; }
-  .subtitle { font-size: 1rem; }
-  .logo { width: 70px; }
-}
-
-@media (max-width: 768px) {
-  .title { font-size: 3.5rem; }
-  .Llogo { width: 55px; }
-  .subtitle { font-size: 1rem; }
-  .Llogo-container { gap: 8px; }
-}
-
-@media (max-width: 480px) {
-  .title { font-size: 2.8rem; }
-  .Llogo { width: 44px; }
-  .subtitle { font-size: 0.9rem; }
-}
-
-@media (max-width: 1024px) {
-  .dashboard-content { flex-direction: column; }
-  .dashboard-info, .dashboard-data { flex: 1 1 100%; }
-}
+}

@@ -1,33 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+/* ==========================================================================
+   CINEMAX - FOOTER (FULLY RESPONSIVE)
+   ========================================================================== */
 
 :root {
-  --muted: #cfcfcf;
-  --muted-2: #bdbdbd;
+  --muted: #cbd5e1;
+  --muted-2: #94a3b8;
   --box-border: rgba(255, 255, 255, 0.08);
-}
-
-/* Global Reset */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Poppins", sans-serif;
 }
 
 /* ====== FOOTER BASE ====== */
 footer {
   width: 100%;
-  background: #000;
-  color: #fff;
-  padding: 2.5rem 6rem;
+  background: #000000;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 4vw, 3rem);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   margin-top: auto;
-
   position: relative;
-  bottom: 0;
+  z-index: 10;
 }
+
 
 /* ====== INNER WRAPPER ====== */
 .footer-inner {
@@ -36,13 +31,12 @@ footer {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 3rem;
+  gap: clamp(1.5rem, 3vw, 3rem);
 }
 
 /* ====== LEFT SECTION ====== */
 .footer-left {
-  margin-top: 3%;
-  flex: 0 0 220px;
+  flex: 0 0 clamp(180px, 20vw, 220px);
   display: flex;
   align-items: flex-start;
 }
@@ -50,24 +44,29 @@ footer {
 .logo-wrap {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.75rem;
 }
 
 .logo-img {
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.4));
 }
 
 .logo-text .brand {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .logo-text .brand-sub {
   font-size: 0.75rem;
   color: var(--muted-2);
+  margin-top: 2px;
 }
 
 /* ====== MIDDLE SECTION ====== */
@@ -75,144 +74,89 @@ footer {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  text-align: justify;
-  margin-top: 1%;
+  gap: 0.75rem;
 }
 
 .footer-paragraph {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   line-height: 1.6;
   color: var(--muted);
+  text-align: justify;
 }
 
 .footer-social-row {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  margin-top: 0.3rem;
+  gap: 0.65rem;
 }
 
 .social-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #60a5fa;
+  font-size: 16px;
+  transition: all 0.25s ease;
 }
 
-.social-icon i {
-  font-size: 18px;
-  color: var(--muted);
+.social-icon:hover {
+  background: #2563eb;
+  color: #ffffff;
+  transform: scale(1.1);
 }
 
 .social-text {
-  font-size: 0.9rem;
-  color: var(--muted);
+  font-size: 0.85rem;
+  color: var(--muted-2);
 }
 
 /* ====== RIGHT SECTION ====== */
 .footer-right {
-  flex: 0 0 300px;
+  flex: 0 0 clamp(240px, 28vw, 320px);
   display: flex;
   flex-direction: column;
-  margin-top: 5px;
+  gap: 0.4rem;
 }
 
 .disclaimer-title {
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  text-align: center;
+  font-size: 0.9rem;
+  color: #f1f5f9;
 }
 
 .disclaimer-text {
-  font-size: 0.7rem;
-  line-height: 1.5;
-  color: var(--muted);
-  text-align: justify;
-  padding: 1rem 1.25rem;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--muted-2);
+  padding: 0.85rem 1rem;
   border: 1px solid var(--box-border);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
 }
 
-/* ====== ENSURE FOOTER STICKS TO BOTTOM ====== */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.overlay {
-  flex: 1; 
-}
-
-/* ====== 💻 LAPTOP MEDIUM SCREENS (900px–1200px) ====== */
-@media (max-width: 1200px) {
-  footer {
-    padding: 2rem 3rem;
-  }
-
-  .footer-inner {
-    gap: 1.5rem;
-  }
-
-  .footer-left {
-    flex: 0 0 180px;
-  }
-
-  .footer-right {
-    flex: 0 0 250px;
-  }
-
-  .footer-paragraph {
-    font-size: 0.78rem;
-  }
-
-  .disclaimer-text {
-    font-size: 0.65rem;
-  }
-}
-
-/* ====== 📱 MOBILE & TABLET ====== */
-@media (max-width: 900px) {
-  footer {
-    padding: 1rem 1rem;
-  }
-
+/* ====== RESPONSIVE BREAKPOINTS ====== */
+@media (max-width: 850px) {
   .footer-inner {
     flex-direction: column;
-    display: flex;
     align-items: flex-start;
+    gap: 1.75rem;
   }
 
-  .footer-left,.footer-right {
-    width: 70%;
-    flex: none;
-    gap: inherit;
-    margin-bottom: 0%;
-    padding-bottom: 0%;
-  }
-
-  .footer-middle {
+  .footer-left,
+  .footer-middle,
+  .footer-right {
     width: 100%;
+    flex: none;
   }
 
   .footer-paragraph {
-    font-size: 0.85rem;
-  }
-
-  .disclaimer-title {
     text-align: left;
-    margin-top: 0%;
-  }
-
-  .disclaimer-text {
-    width: 100%;
-    padding: 1rem 1.25rem;
-
   }
 }
+

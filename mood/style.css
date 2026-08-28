@@ -1,3 +1,7 @@
+/* ==========================================================================
+   CINEMAX - MOOD EXPLORER STYLES (FULLY RESPONSIVE)
+   ========================================================================== */
+
 @font-face {
   font-family: "SF Pro";
   src: url("../fonts/sf-pro-display/SFPRODISPLAYBOLD.OTF") format("truetype");
@@ -13,337 +17,270 @@
   src: url("../fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF") format("truetype");
 }
 
-
-html, body{
-  height: 100%;
-  width: 100%;
+* {
   margin: 0;
   padding: 0;
-  color: white;
-
-  background-color: #000; 
-
-  font-family: "SF Light", sans-serif;
-  overflow-x: hidden;
-  display: block;
+  box-sizing: border-box;
 }
 
-/* SEARCH OVERLAY RESULTS */
-#overlayResults {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-  gap: 1.2rem !important;
-  justify-items: center !important;
-  align-items: start !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-#overlayResults .movie-card {
+html, body {
+  min-height: 100%;
   width: 100%;
-  background: #111827;
-  border-radius: 10px;
-  overflow: hidden;
-  transition: transform 0.3s ease;
+  color: white;
+  background-color: #030611;
+  font-family: "SF Light", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-#overlayResults .movie-card:hover {
-  transform: scale(1.05);
-}
-
-.search-overlay .results {
-  margin-top: 1.5rem;
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.favorite-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 22px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 10; /* ensure it’s above the overlay */
-  color: white; /* or any color you want */
-  text-shadow: 0 0 4px black; /* better visibility */
-}
-
-/* HERO Section t */
+/* ==========================================================================
+   HERO / MAIN CONTENT
+   ========================================================================== */
 .hero {
   background-image: url("../images/moodbg1.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
   background-color: #0b1236;
-  
-  height: calc(100vh - var(--nav-height));
-  width: 100vw; 
-  position:relative;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  padding: 100px clamp(1rem, 3.5vw, 2.5rem) 3rem;
 }
 
 .hero .overlay {
   position: absolute;
   inset: 0;
   display: flex;
-  justify-content: center; 
-  align-items: center;     
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  background: rgba(0,0,0,0.45);
-  padding: 0 1rem;
+  background: radial-gradient(circle at center, rgba(3, 7, 20, 0.6) 0%, rgba(3, 7, 20, 0.88) 100%);
+  padding: 100px clamp(1rem, 3.5vw, 2.5rem) 3rem;
+  overflow-y: auto;
 }
 
-.container{
-  max-width: 100%;
+.container {
+  max-width: 1100px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
 }
 
 .title {
-  font-size: 1.6rem;     
-  font-weight: 300;      
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 400;
   font-family: "SF Light", sans-serif;
-  margin-bottom: 0rem;
+  color: #94a3b8;
+  letter-spacing: 1px;
 }
 
 .subtitle {
-  font-size: 3.2rem;      
-  font-weight: 600;
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  font-weight: 700;
   font-family: "SF Pro", sans-serif;
-  color: #fff;
-  letter-spacing: 1.5px; 
-  
-  /* subtle neon white glow */
-  text-shadow: 
-    0 0 4px rgba(255, 255, 255, 0.6),
-    0 0 8px rgba(255, 255, 255, 0.4);
-
-  margin-bottom: 1.5rem;
-  max-width: 1000px;      
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+  max-width: 900px;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin: 0.5rem auto 1.5rem;
+  line-height: 1.15;
 }
 
-
-/* Mood Buttons */
+/* ==========================================================================
+   MOOD BUTTONS
+   ========================================================================== */
 .mood-buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.55rem;
-  margin-bottom: 1.5rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
+  margin-bottom: 2rem;
+  max-width: 850px;
+  width: 100%;
 }
 
 .mood-buttons button {
-  padding: 0.7rem 1.3rem;
-  font-size: 1rem;
+  padding: 0.75rem 1.4rem;
+  font-size: clamp(0.85rem, 1.5vw, 0.95rem);
   font-weight: 600;
-  border: none;
-  border-radius: 12px;  
+  font-family: "SF Medium", sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
   cursor: pointer;
-  transition: 0.2s ease;
-  color: #fff;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
 }
 
-
-/* Button Themes */
-.mood-buttons button:nth-child(1) { background: #f4c542; }
-.mood-buttons button:nth-child(2) { background: #5b9bd5; }
-.mood-buttons button:nth-child(3) { background: #d9534f; }
-.mood-buttons button:nth-child(4) { background: #9b59b6; }
-.mood-buttons button:nth-child(5) { background: #e83e8c; }
-.mood-buttons button:nth-child(6) { background: #f39c12; }
-.mood-buttons button:nth-child(7) { background: #48c9b0; }
+.mood-buttons button:nth-child(1) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.mood-buttons button:nth-child(2) { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.mood-buttons button:nth-child(3) { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+.mood-buttons button:nth-child(4) { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+.mood-buttons button:nth-child(5) { background: linear-gradient(135deg, #ec4899, #be185d); }
+.mood-buttons button:nth-child(6) { background: linear-gradient(135deg, #f97316, #c2410c); }
+.mood-buttons button:nth-child(7) { background: linear-gradient(135deg, #10b981, #047857); }
 
 .mood-buttons button:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Movies Section */
-/* When movies are active, shrink hero content */
-.hero.shrink .title,
-.hero.shrink .subtitle,
-.hero.shrink .mood-buttons {
-  transform: scale(0.85);
-  opacity: 1;
-  margin-top: -10px; 
-  transition: 0.35s ease;
+.mood-buttons button:active {
+  transform: translateY(0);
 }
 
-/* Movies Section */
+/* ==========================================================================
+   MOVIES SECTION (RESULTS)
+   ========================================================================== */
 .movies-section {
   width: 100%;
-  max-width: 1100px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(12px);
-  transition: 0.35s ease;
-  background: none;         
+  transform: translateY(16px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .movies-section.active {
   opacity: 1;
   pointer-events: auto;
-  padding: 1rem 1.2rem;      
-  background: rgba(0, 0, 0, 0.38); 
-  border-radius: 14px;
-  backdrop-filter: blur(6px);
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   transform: translateY(0);
-  max-width: 700px;         
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
 }
 
-
-/* Make movie row stay inside box with consistent spacing */
 .movie-grid {
   display: flex;
-  gap: 18px;
+  gap: 1.2rem;
   overflow-x: auto;
-  overflow-y: visible !important; 
-  padding: 0.4rem 0.4rem 0.6rem;
-  scroll-snap-type: x mandatory;
+  padding: 0.5rem 0.25rem 0.75rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
 }
 
-.movie-grid::-webkit-scrollbar {
-  height: 8px;
-}
-.movie-grid::-webkit-scrollbar-thumb {
-  background: rgba(148, 148, 148, 0.45);
-  border-radius: 8px;
-}
-
-/* MOVIE CARD */
 .movie-card {
-  flex: 0 0 150px;
+  flex: 0 0 clamp(130px, 28vw, 170px);
   display: flex;
   flex-direction: column;
-  background: rgba(0,0,0,0.55);
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.35s ease; /* smoother */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   scroll-snap-align: start;
   position: relative;
-
 }
 
-/* CARD HOVER — Bigger scale */
 .movie-card:hover {
-  transform: scale(1.05); /* Increase scale here */
-}
-
-/* DARK OVERLAY ON HOVER */
-.movie-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0);
-  transition: background 0.25s ease;
-  pointer-events: none;
-}
-
-.movie-card:hover::after {
-  background: rgba(0,0,0,0.35);
-}
-
-
-/* Text Section - match exact card background */
-.movie-info {
-  flex-grow: 1;              
-  display: flex;
-  flex-direction: column;
-  justify-content: center;   
-  padding: 0.6rem;
-  background: rgba(0,0,0,0.55); 
-  text-align: center;
-}
-
-.movie-info h3 {
-  font-size: 0.75rem;
-  margin: 0.25rem 0;
-}
-
-.movie-info p {
-  font-size: 0.65rem;
-  margin: 0;
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(37, 99, 235, 0.3);
+  border-color: rgba(96, 165, 250, 0.4);
 }
 
 .movie-card img {
   width: 100%;
-  height: 200px;
+  height: clamp(180px, 38vw, 235px);
   object-fit: cover;
   display: block;
-  transition: transform 0.35s ease;
 }
 
-.movie-card:hover img {
-  transform: scale(1.08);
+.movie-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.65rem;
+  background: rgba(15, 23, 42, 0.95);
+  text-align: center;
 }
 
-/* Fade-in effect */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+.movie-info h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.favorite-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 22px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: yellow;
+.movie-info p {
+  font-size: 0.75rem;
+  color: #94a3b8;
 }
 
-/* Responsive */
+/* ==========================================================================
+   CUSTOM SCROLLBARS
+   ========================================================================== */
+.movie-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.movie-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
 @media (max-width: 768px) {
   .hero {
-    background-size: cover;
-    background-position: top center;
+    padding-top: 85px;
   }
 
-  .title { font-size: 1.7rem; }
-  .subtitle { font-size: 1.1rem; }
-
-  .mood-buttons {
-    width: 90%;
-    gap: 10px;
+  .hero .overlay {
+    padding-top: 85px;
   }
 
-  .mood-buttons button {
-    flex: 1 1 45%;
-    font-size: 0.9rem;
-    padding: 10px 0;
-  }
-}
-
-@media (max-width: 430px) {
-  .title { font-size: 1.4rem; }
-  .subtitle { font-size: 1rem; }
-
-  .mood-buttons {
-    width: 95%;
-    gap: 0.5rem;
+  .subtitle {
+    font-size: 2rem;
   }
 
   .mood-buttons button {
     flex: 1 1 calc(50% - 0.5rem);
-    font-size: 0.95rem;
-    padding: 12px 0;
-    border-radius: 25px;
+    text-align: center;
   }
 }
+
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 75px;
+  }
+
+  .hero .overlay {
+    padding-top: 75px;
+  }
+
+  .subtitle {
+    font-size: 1.6rem;
+  }
+
+  .mood-buttons {
+    gap: 0.4rem;
+  }
+
+  .mood-buttons button {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.82rem;
+  }
+}
+
