@@ -270,7 +270,7 @@ h2 {
 /* Mobile & Small Tablets (<= 768px) */
 @media (max-width: 768px) {
   .container {
-    padding-top: 80px;
+    padding: 80px 1.5rem 2rem;
   }
 
   .highlight-section {
@@ -294,7 +294,7 @@ h2 {
 /* Small Mobile (<= 480px) */
 @media (max-width: 480px) {
   .container {
-    padding: 75px 0.75rem 1.5rem;
+    padding: 75px 1.25rem 1.5rem;
   }
 
   h2 {
@@ -310,5 +310,6 @@ h2 {
     font-size: 2.8rem;
   }
 }
+
 
 

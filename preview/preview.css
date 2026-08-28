@@ -276,6 +276,10 @@ html, body {
 
 /* Tablets & Small Laptops (<= 850px) */
 @media (max-width: 850px) {
+  .page {
+    padding: 1.5rem;
+  }
+
   .page-inner {
     padding-top: 55px;
   }
@@ -309,7 +313,7 @@ html, body {
 /* Mobile Devices (<= 480px) */
 @media (max-width: 480px) {
   .page {
-    padding: 0.75rem;
+    padding: 1.25rem;
   }
 
   .page-inner {
@@ -325,6 +329,7 @@ html, body {
   }
 
   .desc-box {
-    padding: 1.2rem 1rem;
+    padding: 1.2rem 1.1rem;
   }
-}
+}
+

@@ -130,10 +130,20 @@
     <!-- ✅ Footer Placeholder -->
   <div id="footer-placeholder"></div>
 
+  <!-- ✅ Load Navbar, Chatbot, and Footer -->
   <script src="../nav-bar/nav-bar.js"></script>
-
-  <!-- ✅ Footer Loader -->
+  <script src="../chatbot/chatbot.js"></script>
+  
   <script>
+    // Load Navbar
+    fetch("../nav-bar/nav.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("navbar-placeholder").innerHTML = data;
+      })
+      .catch(error => console.error("Navbar failed to load:", error));
+
+    // Load Footer
     fetch("../footer/footer.html")
       .then(response => response.text())
       .then(data => {
@@ -141,36 +151,6 @@
       })
       .catch(error => console.error("Footer failed to load:", error));
   </script>
-
-
-  <!-- ✅ Load Navbar + Search Script -->
- <script>
-  fetch("../nav-bar/nav.html")
-    .then(response => response.text())
-    .then(data => {
-      // Remove search bar before inserting navbar
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = data;
-
-      // Remove the search container if it exists
-      const search = tempDiv.querySelector(".search-container");
-      if (search) search.remove();
-
-      document.getElementById("navbar-placeholder").innerHTML = tempDiv.innerHTML;
-
-      // Highlight active nav link
-      const currentPage = window.location.pathname.split("/").pop();
-      const links = document.querySelectorAll(".nav-links a");
-      links.forEach(link => {
-        if (link.getAttribute("href").includes(currentPage)) {
-          link.classList.add("active");
-        } else {
-          link.classList.remove("active");
-        }
-      });
-    })
-    .catch(error => console.error("Navbar failed to load:", error));
-</script>
 
 </body>
 </html>

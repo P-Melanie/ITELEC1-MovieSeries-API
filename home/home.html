@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cinemax | Home</title>
 
+  <script>
+    if (sessionStorage.getItem("cinemax_splash_shown")) {
+      document.documentElement.classList.add("skip-splash");
+    }
+  </script>
+
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -22,20 +28,19 @@
   <!-- Chatbot -->
   <div id="chatbot-placeholder"></div>
 
-    <!-- ================= LANDING PAGE ================= -->
-    <section class="landing">
+    <!-- ================= SPLASH SCREEN ================= -->
+    <section class="landing" id="splashScreen">
         <div class="overlay"></div>
 
         <div class="content">
           <div class="Llogo-container">
-            <img src="../images/logo.png" class="Llogo">
+            <img src="../images/logo.png" class="Llogo" alt="Cinemax Logo">
             <h1 class="title">Cinemax</h1>
           </div>
           <p class="subtitle">Explore. Discover. Feel the Story.</p>
         </div>
-
-        <div class="arrow" id="scrollArrow">&#x25BC;</div>
     </section>
+
 
   <div class="container">
     <!-- ================= DASHBOARD ================= -->
@@ -43,41 +48,40 @@
 
       <!-- Cinemax Info Section -->
       <div class="c-section">
-          <!-- 🎞️ Moving film background -->
-          <div class="film-strip-bg"></div>
+        <!-- 🎞️ Moving film background -->
+        <div class="film-strip-bg"></div>
 
-        <div class="c-left">
-          <div class="c-logo">
-            <img src="../images/cinemax-logo.png">
-            <h2>Cinemax</h2>
-          </div>
-          <p class="c-tagline">Explore. Discover. Feel the Story.</p>
-        </div>
-
-        <div class="c-right">
-          <p>
-            Cinemax is your all-in-one destination for exploring movies! Discover a wide collection of films with complete details including synopsis, 
-            genre, cast, ratings, and official trailers to help you decide what to watch next. Whether you’re into action, romance, comedy, or thrillers, 
-            Cinemax lets you dive deeper into every movie — all in one simple and interactive platform.
-          </p>
-
-          <div class="movie-facts-container">
-            <h3>🎞️ Fun Reel Facts</h3>
-            <p id="movieFact">Click below to reveal a random fun fact!</p>
-            <button id="factBtn">Get a Random Fact</button>
+        <div class="c-inner">
+          <div class="c-left">
+            <div class="c-logo">
+              <img src="../images/cinemax-logo.png" alt="Cinemax Logo">
+              <h2>Cinemax</h2>
+            </div>
+            <p class="c-tagline">Explore. Discover. Feel the Story.</p>
           </div>
 
+          <div class="c-right">
+            <p>
+              Cinemax is your all-in-one destination for exploring movies! Discover a wide collection of films with complete details including synopsis, 
+              genre, cast, ratings, and official trailers to help you decide what to watch next. Whether you’re into action, romance, comedy, or thrillers, 
+              Cinemax lets you dive deeper into every movie — all in one simple and interactive platform.
+            </p>
+
+            <div class="movie-facts-container">
+              <h3>🎞️ Fun Reel Facts</h3>
+              <p id="movieFact">Click below to reveal a random fun fact!</p>
+              <button id="factBtn">Get a Random Fact</button>
+            </div>
+          </div>
         </div>
       </div> 
 
-    <!-- ================= MOVIE FACTS & TRIVIA SECTION ================= -->
-
-    <!-- ================= MOVIE MOOD WEATHER SECTION =================== -->
+      <!-- ================= MOVIE MOOD WEATHER SECTION =================== -->
       <section class="movie-mood-weather">
         <div class="weather-container">
           <!-- LEFT SIDE -->
           <div class="weather-left">
-            <h2>🎬Movie Mood Weather</h2>
+            <h2>🎬 Movie Mood Weather</h2>
             <p class="subtitle">Forecast the Feels: Where Weather Meets Cinema</p>
             <div class="refresh-container">
               <button id="refreshMoodBtn">Refresh Weather</button>
@@ -85,30 +89,31 @@
           </div>
 
           <!-- RIGHT SIDE -->
-
           <div class="weather-right" id="weatherContainer">
-  <div class="weather-header">
-    <img id="weatherIcon" src="" alt="Weather Icon">
-    <p> It's </p>
-    <span id="weatherTemp">--°C</span>
-    <p> at </p>
-    <span id="weatherLocation">Loading...</span>
-  </div>
+            <div class="weather-header">
+              <img id="weatherIcon" src="" alt="Weather Icon">
+              <p>It's</p>
+              <span id="weatherTemp">--°C</span>
+              <p>at</p>
+              <span id="weatherLocation">Loading...</span>
+            </div>
 
-  <p id="moodDescription" class="mood-text">Fetching mood...</p>
-  <p id="movieNameSuggestions" class="movie-suggestion-text"></p>
-</div>
-</div>
+            <p id="moodDescription" class="mood-text">Fetching mood...</p>
+            <p id="movieNameSuggestions" class="movie-suggestion-text"></p>
+          </div>
+        </div>
 
-<div class="suggested-section">
-  <h3 class="suggested-title">Suggested Movies</h3>
-  <div class="movie-list" id="movie-list"></div>
-</div>
+        <div class="suggested-section">
+          <h3 class="suggested-title">Suggested Movies</h3>
+          <div class="movie-list" id="movie-list"></div>
+        </div>
 
-<div class="see-more-container">
-  <button id="seeMoreBtn" class="see-more-btn">See more</button>
-</div>
-</section>
+        <div class="see-more-container">
+          <button id="seeMoreBtn" class="see-more-btn">See more</button>
+        </div>
+      </section>
+
+
 
     </section> <!-- End of dashboard -->
     
@@ -141,42 +146,11 @@
       <script src="../nav-bar/nav-bar.js"></script>
 
       <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const scrollArrow = document.getElementById("scrollArrow");
-        const landing = document.querySelector(".landing");
-        const dashboard = document.querySelector(".dashboard");
-
-        // Wait until navbar loads
-        const navbarCheck = setInterval(() => {
-          const navbar = document.querySelector(".navbar");
-          if (navbar) {
-            clearInterval(navbarCheck);
-
-            scrollArrow.addEventListener("click", () => {
-              // Animate landing page upward
-              landing.classList.add("slide-up");
-              scrollArrow.classList.add("slide-away");
-
-              // Animate navbar downward into view
-              setTimeout(() => {
-                navbar.classList.add("navbar-down");
-              }, 400);
-
-              // Show dashboard smoothly after navbar transition
-              setTimeout(() => {
-                dashboard.classList.add("show-dashboard");
-              }, 700); 
-            });
-          }
-        }, 200);
-      });
-      </script>
-
-      <script>
         window.addEventListener("scroll", () => {
           document.body.classList.toggle("scrolled", window.scrollY > 20);
         });
       </script>
+
 
 </body>
 </html>

@@ -36,38 +36,49 @@ footer {
 
 /* ====== LEFT SECTION ====== */
 .footer-left {
-  flex: 0 0 clamp(180px, 20vw, 220px);
+  flex: 0 0 clamp(220px, 24vw, 280px);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  align-self: center;
 }
 
 .logo-wrap {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
 }
 
 .logo-img {
-  width: 42px;
-  height: 42px;
+  width: clamp(72px, 7.5vw, 92px);
+  height: clamp(72px, 7.5vw, 92px);
   object-fit: contain;
-  filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.4));
+  filter: drop-shadow(0 0 16px rgba(37, 99, 235, 0.5));
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.logo-wrap:hover .logo-img {
+  transform: scale(1.05);
 }
 
 .logo-text .brand {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: clamp(1.6rem, 2.2vw, 2.1rem);
+  font-weight: 800;
   color: #ffffff;
   background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .logo-text .brand-sub {
-  font-size: 0.75rem;
+  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
   color: var(--muted-2);
-  margin-top: 2px;
+  margin-top: 6px;
+  letter-spacing: 0.5px;
 }
+
 
 /* ====== MIDDLE SECTION ====== */
 .footer-middle {
@@ -142,6 +153,10 @@ footer {
 
 /* ====== RESPONSIVE BREAKPOINTS ====== */
 @media (max-width: 850px) {
+  footer {
+    padding: 2.5rem 1.5rem;
+  }
+
   .footer-inner {
     flex-direction: column;
     align-items: flex-start;
@@ -159,4 +174,11 @@ footer {
     text-align: left;
   }
 }
+
+@media (max-width: 480px) {
+  footer {
+    padding: 2rem 1.25rem;
+  }
+}
+
 

@@ -284,7 +284,7 @@ body::before {
    ========================================================================== */
 @media (max-width: 768px) {
   .about-section {
-    padding-top: 85px;
+    padding: 90px 1.5rem 2.5rem;
   }
 
   .about-content p {
@@ -292,7 +292,7 @@ body::before {
   }
 
   .team-section {
-    padding: 3rem 1.25rem;
+    padding: 3rem 1.5rem;
   }
 
   .team-grid {
@@ -303,11 +303,15 @@ body::before {
 
 @media (max-width: 480px) {
   .about-section {
-    padding-top: 75px;
+    padding: 80px 1.25rem 2rem;
+  }
+
+  .team-section {
+    padding: 2.5rem 1.25rem;
   }
 
   .about-content {
-    padding: 1.25rem 1rem;
+    padding: 1.25rem 1.1rem;
     border-radius: 14px;
   }
 
@@ -316,4 +320,5 @@ body::before {
     max-width: 290px;
   }
 }
+
 

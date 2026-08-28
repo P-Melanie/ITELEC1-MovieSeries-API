@@ -11,19 +11,19 @@
 <nav class="navbar">
   <div class="logo">
     <img src="../images/logo.png" alt="Cinemax Logo">
-    <a href="../index.html" class="brand">Cinemax</a>
+    <a href="../home/home.html" class="brand">Cinemax</a>
   </div>
 
   <ul class="nav-links" id="navLinks">
-    <li><a href="../home/home.html" class="active">Home</a></li>
-    <li><a href="../discover/discover.html">Discover</a></li>
-    <li><a href="../mood/index.html">More</a></li>
-    <li><a href="../about/about.html">About</a></li>
+    <li><a href="../home/home.html" data-text="Home">Home</a></li>
+    <li><a href="../discover/discover.html" data-text="Discover">Discover</a></li>
+    <li><a href="../mood/index.html" data-text="More">More</a></li>
+    <li><a href="../about/about.html" data-text="About">About</a></li>
   </ul>
 
   <div class="nav-right">
     <div class="search-container">
-      <button id="searchToggle" class="search-toggle"><i class="fas fa-search"></i></button>
+      <button id="searchToggle" class="search-toggle" aria-label="Search movies"><i class="fas fa-search"></i></button>
       <input type="text" id="searchInput" class="hidden" placeholder="Search movies..." />
     </div>
     <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -31,6 +31,7 @@
     </button>
   </div>
 </nav>
+
 
 
 

@@ -18,14 +18,6 @@
   src: url("../fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF") format("truetype");
 }
 
-:root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --bg-dark: #070a14;
-  --card-bg: rgba(255, 255, 255, 0.06);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -58,13 +50,72 @@ body {
 }
 
 /* ==========================================================================
-   LANDING PAGE (HERO INTRO)
+   INITIAL SPLASH SCREEN HIDING & IMMEDIATE SKIP-SPLASH SUPPORT
+   ========================================================================== */
+html.skip-splash .landing {
+  display: none !important;
+}
+
+html.skip-splash .dashboard {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.skip-splash .navbar {
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: auto !important;
+  transition: none !important;
+}
+
+html.skip-splash #chatbot-toggle {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition: none !important;
+}
+
+/* Lock scroll during active splash screen */
+body.splash-active {
+  overflow: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+/* Initial hidden state for fresh load before splash ends */
+.navbar {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-100%);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.navbar.visible,
+.navbar.navbar-down {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+#chatbot-toggle {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+#chatbot-toggle.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   LANDING / SPLASH SCREEN (NO SCROLLBAR, FULL VIEWPORT)
    ========================================================================== */
 .landing {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   background: url("../images/background.png") center/cover no-repeat;
   display: flex;
@@ -72,9 +123,11 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
-  z-index: 5;
+  overflow: hidden;
+  transition: transform 0.85s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: 9999;
   padding: 1.5rem;
+  cursor: pointer;
 }
 
 .landing.slide-up {
@@ -85,7 +138,7 @@ body {
 .overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.75) 100%);
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.65) 100%);
 }
 
 .landing .content {
@@ -108,55 +161,23 @@ body {
 .Llogo {
   width: clamp(45px, 8vw, 85px);
   height: auto;
-  filter: drop-shadow(0 0 16px rgba(37, 99, 235, 0.5));
 }
 
 .title {
   font-size: clamp(2.8rem, 9vw, 6.5rem);
   font-weight: 700;
-  color: white;
+  color: #ffffff;
   letter-spacing: -0.02em;
   line-height: 1;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
 .subtitle {
   font-family: "SF Medium", sans-serif;
   font-size: clamp(0.95rem, 2.5vw, 1.35rem);
-  color: #e2e8f0;
+  color: #ffffff;
   margin-top: 0.5rem;
   opacity: 0.9;
   letter-spacing: 0.5px;
-}
-
-.arrow {
-  position: absolute;
-  bottom: clamp(30px, 6vh, 70px);
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-  color: white;
-  cursor: pointer;
-  animation: bounce 1.8s infinite;
-  z-index: 2;
-  transition: transform 0.6s ease, opacity 0.5s ease;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.arrow:hover {
-  background: rgba(37, 99, 235, 0.4);
-  border-color: rgba(96, 165, 250, 0.6);
-}
-
-.arrow.slide-away {
-  opacity: 0;
-  transform: translateY(30px);
 }
 
 /* ==========================================================================
@@ -166,9 +187,9 @@ body {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(180deg, #030611 0%, #08152e 50%, #030611 100%);
+  background: linear-gradient(180deg, #000000 0%, #0a213d 100%);
   color: white;
-  padding-top: 80px;
+  padding-top: 75px;
   padding-bottom: 2rem;
   opacity: 0;
   transform: translateY(40px);
@@ -182,21 +203,22 @@ body {
 }
 
 /* ==========================================================================
-   CINEMAX INTRO / HERO INFO SECTION
+   CINEMAX INTRO / HERO INFO SECTION (VIBRANT FILMSTRIP)
    ========================================================================== */
 .c-section {
   width: 100%;
   min-height: 60vh;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
   padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 5vw, 4rem);
+  box-sizing: border-box;
   margin-top: 1rem;
 }
 
-/* Film Strip Moving Background */
+/* 🎞️ Moving Film Strip Background */
 .c-section .film-strip-bg {
   position: absolute;
   top: 0;
@@ -208,7 +230,7 @@ body {
     url("../images/homebg1.jpg") no-repeat center center fixed;
   background-size: contain, cover;
   animation: moveFilm 35s linear infinite;
-  opacity: 0.3;
+  opacity: 0.90;
   z-index: 0;
 }
 
@@ -221,20 +243,22 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(5, 9, 23, 0.75) 0%, rgba(3, 6, 17, 0.92) 100%);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 1;
 }
 
-.c-section > *:not(.film-strip-bg) {
+/* 2-Column Grid matching Weather section */
+.c-inner {
   position: relative;
   z-index: 2;
-}
-
-.c-left, .c-right {
-  flex: 1;
-  padding: 0 clamp(0.5rem, 2vw, 2rem);
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .c-left {
@@ -242,6 +266,9 @@ body {
   flex-direction: column;
   gap: 0.8rem;
   align-items: flex-start;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .c-logo {
@@ -251,70 +278,75 @@ body {
 }
 
 .c-logo img {
-  width: clamp(48px, 7vw, 75px);
+  width: clamp(48px, 7vw, 78px);
   height: auto;
-  filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.5));
 }
 
 .c-logo h2 {
-  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-size: clamp(2.8rem, 6vw, 5.6rem);
   font-weight: 700;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffffff;
+  margin: 0;
 }
 
 .c-tagline {
   font-size: clamp(1rem, 2vw, 1.25rem);
-  color: #94a3b8;
+  color: #dddddd;
   font-family: "SF Medium", sans-serif;
   letter-spacing: 0.5px;
+  margin: 0;
 }
 
 .c-right {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .c-right p {
   font-family: "SF Light", sans-serif;
   font-size: clamp(0.95rem, 1.5vw, 1.05rem);
   line-height: 1.7;
-  color: #cbd5e1;
+  color: #dfdfdf;
   text-align: justify;
+  margin: 0;
 }
 
-/* Fun Reel Facts Box */
+/* ==========================================================================
+   FUN REEL FACTS (MATCHED EQUAL WIDTH WITH WEATHER BOX)
+   ========================================================================== */
 .movie-facts-container {
+  width: 100%;
+  box-sizing: border-box;
   text-align: center;
-  background: rgba(15, 23, 42, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: clamp(1.2rem, 3vw, 2rem);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.movie-facts-container:hover {
-  border-color: rgba(96, 165, 250, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: clamp(1.5rem, 3vw, 2.2rem);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
 }
 
 .movie-facts-container h3 {
   font-family: "SF Pro", sans-serif;
-  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #60a5fa;
+  color: #ffffff;
 }
 
 #movieFact {
   font-family: "SF Medium", sans-serif;
   font-size: clamp(0.95rem, 1.8vw, 1.15rem);
   margin-bottom: 1.2rem;
-  color: #e2e8f0;
+  color: #ffffff;
   line-height: 1.5;
   min-height: 48px;
   display: flex;
@@ -324,7 +356,7 @@ body {
 
 #factBtn {
   padding: 0.75rem 1.75rem;
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  background: #00268f;
   border: none;
   color: white;
   font-family: "SF Medium", sans-serif;
@@ -333,103 +365,141 @@ body {
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 38, 143, 0.4);
 }
 
 #factBtn:hover {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  background: #003be1;
+  transform: scale(1.04);
 }
 
 #factBtn:active {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 /* ==========================================================================
-   MOVIE MOOD WEATHER SECTION
+   MOVIE MOOD WEATHER SECTION (EXACT 2-COLUMN GRID & STRAIGHT LEFT ALIGNMENT)
    ========================================================================== */
 .movie-mood-weather {
   width: 100%;
-  max-width: 1300px;
-  margin: 2rem auto;
-  padding: 0 clamp(1.2rem, 4vw, 3rem);
+  margin: 3rem 0 2rem;
+  padding: 0 clamp(1.5rem, 5vw, 4rem); /* IDENTICAL HORIZONTAL PADDING TO .c-section */
+  box-sizing: border-box;
   color: white;
   display: flex;
   flex-direction: column;
 }
 
+/* 2-Column Grid matching .c-inner */
 .weather-container {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
   align-items: center;
-  gap: clamp(1.5rem, 4vw, 3rem);
+  box-sizing: border-box;
   margin-bottom: 2.5rem;
 }
 
 .weather-left {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.6rem;
+  text-align: left;
+  gap: 0.85rem;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .weather-left h2 {
-  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-size: clamp(2.2rem, 4.5vw, 3.2rem);
   font-weight: 700;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  line-height: 1.15;
 }
 
 .weather-left .subtitle {
-  color: #94a3b8;
-  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
-  margin-bottom: 1rem;
+  color: #cbd5e1;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .refresh-container {
   display: flex;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
+  margin: 0.5rem 0 0 0;
+  padding: 0;
 }
 
 #refreshMoodBtn {
-  padding: 0.8rem 1.8rem;
+  margin: 0;
+  padding: 0.75rem 1.8rem;
   border-radius: 30px;
-  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  background: #00268f;
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;
   cursor: pointer;
   transition: all 0.25s ease;
   font-size: 0.95rem;
   font-family: "SF Medium", sans-serif;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-weight: 400 !important; /* Normal weight, easy to read */
+  box-shadow: 0 4px 15px rgba(0, 38, 143, 0.4);
 }
 
 #refreshMoodBtn:hover {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  background: #003be1;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 59, 225, 0.6);
 }
 
-/* Weather Stats Card (Right Side) */
+/* Weather Stats Card (EXACT SAME WIDTH & EDGES AS FUN REEL FACTS) */
 .weather-right {
-  flex: 1;
-  max-width: 500px;
+  width: 100%;
+  box-sizing: border-box;
   position: relative;
-  background: rgba(15, 23, 42, 0.7);
-  padding: clamp(1.2rem, 3vw, 2rem);
+  background: rgba(255, 255, 255, 0.08);
+  padding: clamp(1.8rem, 3.5vw, 2.5rem);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   overflow: hidden;
   transition: all 0.5s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.weather-right::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  z-index: 0;
+}
+
+.weather-header,
+.mood-text,
+.movie-suggestion-text {
+  position: relative;
+  z-index: 1;
 }
 
 .weather-header {
@@ -437,41 +507,54 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-weight: 600;
-  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-  margin-bottom: 0.5rem;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  color: #ffffff;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.weather-header p {
+  font-weight: 400;
+  color: #cbd5e1;
+  margin: 0;
 }
 
 #weatherIcon {
   width: clamp(55px, 8vw, 75px);
   height: auto;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
 }
 
 #weatherTemp {
   color: #60a5fa;
   font-weight: 700;
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  margin: 0 2px;
 }
 
 #weatherLocation {
-  color: #f1f5f9;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .mood-text {
-  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
   font-family: "SF Medium", sans-serif;
   color: #f8fafc;
   text-align: center;
-  margin-top: 0.3rem;
+  margin: 0;
+  font-weight: 400; /* Regular weight */
+  line-height: 1.45;
 }
 
 .movie-suggestion-text {
-  font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+  font-size: clamp(0.88rem, 1.5vw, 0.98rem);
   font-family: "SF Light", sans-serif;
   color: #94a3b8;
-  margin-top: 0.5rem;
+  margin: 0;
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-weight: 400; /* Regular weight */
 }
 
 /* Suggested Movies Section */
@@ -483,7 +566,7 @@ body {
 .suggested-title {
   font-size: clamp(1.25rem, 2.5vw, 1.7rem);
   font-weight: 600;
-  color: #f1f5f9;
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 
@@ -507,13 +590,13 @@ body {
   border-radius: 12px;
   overflow: hidden;
   background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 8px;
 }
 
 .movie-card:hover {
   transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
   border-color: rgba(96, 165, 250, 0.4);
 }
 
@@ -549,15 +632,14 @@ body {
   border-radius: 20px;
   font-size: 0.95rem;
   font-family: "SF Medium", sans-serif;
-  color: #94a3b8;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 .see-more-btn:hover {
-  color: #ffffff;
-  border-color: #60a5fa;
-  background: rgba(96, 165, 250, 0.12);
+  color: #0046f6;
+  border-color: #0046f6;
   transform: translateX(4px);
 }
 
@@ -588,34 +670,26 @@ body {
 }
 
 /* ==========================================================================
-   RESPONSIVE BREAKPOINTS
+   UNIVERSAL RESPONSIVE BREAKPOINTS (STRICT MARGINS & ZERO EDGE BLEEDING)
    ========================================================================== */
 
 /* Tablets & Laptops (<= 992px) */
 @media (max-width: 992px) {
-  .c-section {
-    flex-direction: column;
+  .c-inner,
+  .weather-container {
+    grid-template-columns: 1fr;
     text-align: center;
     gap: 2.5rem;
-    padding: 3rem 1.5rem;
   }
 
-  .c-left {
-    align-items: center;
-  }
-
-  .c-right p {
-    text-align: center;
-  }
-
-  .weather-container {
-    flex-direction: column;
-    text-align: center;
-    gap: 2rem;
-  }
-
+  .c-left,
   .weather-left {
     align-items: center;
+    text-align: center;
+  }
+
+  .weather-left h2,
+  .weather-left .subtitle {
     text-align: center;
   }
 
@@ -623,8 +697,14 @@ body {
     justify-content: center;
   }
 
+  .c-right p {
+    text-align: center;
+  }
+
+  .movie-facts-container,
   .weather-right {
-    max-width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
     width: 100%;
   }
 
@@ -640,38 +720,47 @@ body {
   }
 
   .c-section {
-    padding: 2.5rem 1rem;
+    padding: 2.5rem 1.5rem;
     margin-top: 0;
+  }
+
+  .movie-mood-weather {
+    padding: 0 1.5rem;
   }
 
   .c-section .film-strip-bg {
     width: 450%;
-  }
-
-  .movie-mood-weather {
-    padding: 0 1rem;
   }
 }
 
 /* Small Phones (<= 480px) */
 @media (max-width: 480px) {
   .landing {
-    padding: 1rem;
+    padding: 1.25rem;
   }
 
   .c-section {
-    padding: 2rem 0.75rem;
+    padding: 2rem 1.25rem;
+  }
+
+  .movie-mood-weather {
+    padding: 0 1.25rem;
   }
 
   .c-logo {
     gap: 8px;
   }
 
-  .movie-facts-container {
-    padding: 1.2rem 0.9rem;
+  .movie-facts-container,
+  .weather-right {
+    padding: 1.4rem 1.1rem;
+    width: 100%;
+    max-width: 100%;
   }
 
   .see-more-container {
     justify-content: center;
   }
-}
+}
+
+
