@@ -169,6 +169,54 @@ async function getWeatherAndMood() {
   });
 }
 
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+
+function syncAllFavoriteButtons() {
+  const currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+  const favIds = new Set(currentFavs.map((f) => Number(f.id)));
+  document.querySelectorAll(".movie-card").forEach((card) => {
+    const mId = Number(card.dataset.movieId);
+    const btn = card.querySelector(".favorite-btn");
+    if (btn && mId) {
+      const isFav = favIds.has(mId);
+      btn.textContent = isFav ? "❤️" : "🤍";
+      if (isFav) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    }
+  });
+}
+
+function addFavoriteButton(movie, container) {
+  const heart = document.createElement("button");
+  heart.classList.add("favorite-btn");
+  heart.setAttribute("aria-label", "Favorite movie");
+
+  const currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+  const isExisting = currentFavs.some((fav) => Number(fav.id) === Number(movie.id));
+  heart.textContent = isExisting ? "❤️" : "🤍";
+  if (isExisting) heart.classList.add("active");
+
+  heart.addEventListener("click", (e) => {
+    e.stopPropagation();
+    let currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+    const isFavorited = currentFavs.some((fav) => Number(fav.id) === Number(movie.id));
+    if (isFavorited) {
+      currentFavs = currentFavs.filter((fav) => Number(fav.id) !== Number(movie.id));
+    } else {
+      currentFavs.push(movie);
+    }
+    favorites = currentFavs;
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    syncAllFavoriteButtons();
+  });
+
+  container.appendChild(heart);
+}
+
 async function fetchMovies(genreId) {
   const res = await fetch(
     `https://api.themoviedb.org/3/discover/movie?include_adult=false&sort_by=popularity.desc&with_genres=${genreId}`,
@@ -179,18 +227,28 @@ async function fetchMovies(genreId) {
   const movieListContainer = document.getElementById("movie-list");
   movieListContainer.innerHTML = ""; // clear before adding
 
-  // Create each card dynamically so we can attach click events
+  // Reload current favorites
+  favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+  // Create each card dynamically so we can attach click events & favorite button
   list.forEach((movie) => {
     const card = document.createElement("div");
     card.className = "movie-card";
+    card.dataset.movieId = movie.id;
+    card.style.position = "relative";
     card.innerHTML = `
-<img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title}">
-<p>${movie.title}</p>
-`;
+      <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title}">
+      <p>${movie.title}</p>
+    `;
+    // ✅ add favorite heart button
+    addFavoriteButton(movie, card);
     // ✅ make it clickable to preview.html
     makeCardClickable(card, movie);
     movieListContainer.appendChild(card);
   });
+
+  syncAllFavoriteButtons();
+
 
   // ==== Text suggestion (1–3 movie names) ====
   if (list.length >= 3) {
@@ -235,7 +293,8 @@ document.getElementById("factBtn").addEventListener("click", getMovieFact);
 // --- Clickable cards ---//
 function makeCardClickable(card, movie) {
   card.addEventListener("click", (e) => {
-    if (e.target.classList && e.target.classList.contains("favorite-btn")) return;
+    if (e.target.closest(".favorite-btn")) return;
     window.location.href = `../preview/preview.html?movieID=${movie.id}`;
   });
 }
+

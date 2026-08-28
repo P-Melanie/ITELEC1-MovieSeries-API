@@ -2,14 +2,14 @@
 // CINEMAX - UNIFIED NAVBAR & GLOBAL SEARCH OVERLAY SCRIPT
 // ==========================================================================
 
-const TMDB_TOKEN =
+const NAV_TMDB_TOKEN =
   "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMjA5YTIzMzJhNmNhMDBiZTlhZmU3ZDE1OTFlOTQ3ZCIsIm5iZiI6MTc2MTU0NzI0MS44MjcwMDAxLCJzdWIiOiI2OGZmMTNlOTE1NjE4ZjAzOThkYTAyMjAiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.7BrLe9Tt81ZEIg2T0zV8elagGYC78noCauoVOJIMJHE";
 
-const TMDB_OPTIONS = {
+const NAV_TMDB_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization: `Bearer ${TMDB_TOKEN}`,
+    Authorization: `Bearer ${NAV_TMDB_TOKEN}`,
   },
 };
 
@@ -22,6 +22,7 @@ const GENRE_MAP = {
   Romance: 10749,
   Animation: 16,
 };
+
 
 // --- GLOBAL SEARCH OVERLAY INITIALIZATION ---
 function getOrCreateSearchOverlay() {
@@ -114,7 +115,7 @@ function getOrCreateSearchOverlay() {
       return;
     }
     overlayResults.innerHTML = `<p style="text-align:center;color:#94a3b8;grid-column:1/-1;padding:2rem;">Searching for "${query}"...</p>`;
-    fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&include_adult=false`, TMDB_OPTIONS)
+    fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&include_adult=false`, NAV_TMDB_OPTIONS)
       .then((res) => res.json())
       .then((data) => {
         overlayResults.innerHTML = "";
@@ -134,7 +135,7 @@ function getOrCreateSearchOverlay() {
 
   function fetchByGenre(genreId, genreName) {
     overlayResults.innerHTML = `<p style="text-align:center;color:#94a3b8;grid-column:1/-1;padding:2rem;">Loading ${genreName} movies...</p>`;
-    fetch(`https://api.themoviedb.org/3/discover/movie?with_genres=${genreId}&language=en-US&sort_by=popularity.desc&page=1`, TMDB_OPTIONS)
+    fetch(`https://api.themoviedb.org/3/discover/movie?with_genres=${genreId}&language=en-US&sort_by=popularity.desc&page=1`, NAV_TMDB_OPTIONS)
       .then((res) => res.json())
       .then((data) => {
         overlayResults.innerHTML = "";
@@ -198,23 +199,77 @@ function getOrCreateSearchOverlay() {
   return overlay;
 }
 
-// --- NAVBAR INTERACTION DELEGATION ---
-document.addEventListener("click", function (e) {
-  const hamburgerBtn = e.target.closest("#hamburger");
-  const searchBtn = e.target.closest("#searchToggle") || e.target.closest("#searchBtn");
-  const navLinks = document.getElementById("navLinks");
+// --- AUTO LOAD NAVBAR IF PLACEHOLDER EXISTS & EMPTY ---
+function autoLoadNavbar() {
+  const placeholder = document.getElementById("navbar-placeholder");
+  if (placeholder && !placeholder.innerHTML.trim()) {
+    fetch("../nav-bar/nav.html")
+      .then((r) => r.text())
+      .then((html) => {
+        placeholder.innerHTML = html;
+        updateActiveNavLink();
+        attachDirectNavbarEvents();
+      })
+      .catch((err) => console.error("Navbar failed to auto-load:", err));
+  } else {
+    attachDirectNavbarEvents();
+  }
+}
+
+function attachDirectNavbarEvents() {
+  const hamburger = document.getElementById("hamburger") || document.querySelector(".hamburger");
+  const searchToggle = document.getElementById("searchToggle") || document.querySelector(".search-toggle");
   const searchInput = document.getElementById("searchInput");
-  const searchContainer = document.querySelector(".search-container");
+
+  if (hamburger && !hamburger.dataset.hasDirectListener) {
+    hamburger.dataset.hasDirectListener = "true";
+    const toggleMenu = (e) => {
+      e.stopPropagation();
+      const navLinks = document.getElementById("navLinks") || document.querySelector(".nav-links");
+      if (navLinks) navLinks.classList.toggle("open");
+      hamburger.classList.toggle("active");
+    };
+    hamburger.addEventListener("click", toggleMenu);
+    hamburger.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
+  }
+
+  if (searchToggle && !searchToggle.dataset.hasDirectListener) {
+    searchToggle.dataset.hasDirectListener = "true";
+    const triggerSearch = (e) => {
+      e.stopPropagation();
+      const input = document.getElementById("searchInput") || searchInput;
+      const query = input ? input.value.trim() : "";
+      const overlay = getOrCreateSearchOverlay();
+      overlay.openWithQuery(query);
+    };
+    searchToggle.addEventListener("click", triggerSearch);
+    searchToggle.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", autoLoadNavbar);
+} else {
+  autoLoadNavbar();
+}
+
+// --- NAVBAR INTERACTION DELEGATION (FALLBACK FOR DYNAMIC DOM) ---
+document.addEventListener("click", function (e) {
+  const hamburgerBtn = e.target.closest("#hamburger, .hamburger");
+  const searchBtn = e.target.closest("#searchToggle, #searchBtn, .search-toggle, .search-container button");
+  const navLinks = document.getElementById("navLinks") || document.querySelector(".nav-links");
+  const searchInput = document.getElementById("searchInput");
 
   // 1. Hamburger menu toggle
-  if (hamburgerBtn) {
+  if (hamburgerBtn && !hamburgerBtn.dataset.hasDirectListener) {
+    e.stopPropagation();
     if (navLinks) navLinks.classList.toggle("open");
     hamburgerBtn.classList.toggle("active");
     return;
   }
 
   // 2. Search button click -> Open Global Search Overlay
-  if (searchBtn) {
+  if (searchBtn && !searchBtn.dataset.hasDirectListener) {
     e.stopPropagation();
     const query = searchInput ? searchInput.value.trim() : "";
     const overlay = getOrCreateSearchOverlay();
@@ -225,7 +280,7 @@ document.addEventListener("click", function (e) {
   // 3. Close hamburger when clicking a nav link
   if (e.target.closest(".nav-links a")) {
     if (navLinks) navLinks.classList.remove("open");
-    const hamburger = document.getElementById("hamburger");
+    const hamburger = document.querySelector("#hamburger, .hamburger");
     if (hamburger) hamburger.classList.remove("active");
     return;
   }
@@ -233,10 +288,11 @@ document.addEventListener("click", function (e) {
   // 4. Close mobile menu if clicked outside navbar
   if (!e.target.closest(".navbar") && navLinks && navLinks.classList.contains("open")) {
     navLinks.classList.remove("open");
-    const hamburger = document.getElementById("hamburger");
+    const hamburger = document.querySelector("#hamburger, .hamburger");
     if (hamburger) hamburger.classList.remove("active");
   }
 });
+
 
 // Search input Enter key opens overlay
 document.addEventListener("keypress", function (e) {
@@ -283,6 +339,7 @@ const navObserver = new MutationObserver(() => {
 });
 navObserver.observe(document.body, { childList: true, subtree: true });
 document.addEventListener("DOMContentLoaded", updateActiveNavLink);
+
 
 
 

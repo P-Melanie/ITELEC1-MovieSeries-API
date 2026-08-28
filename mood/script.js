@@ -1,32 +1,7 @@
-// ==================== MOOD PAGE SCRIPT ====================
-
-
-
-
-// --- Show Mood Buttons ---
-const moodButtonsContainer = document.getElementById("moodButtonsContainer");
-const movieSection = document.getElementById("movieSection");
-const movieContainer = document.getElementById("movieContainer");
-
-const moods = [
-  { name: "Happy", key: "happiness" },
-  { name: "Sad", key: "sadness" },
-  { name: "Angry", key: "anger" },
-  { name: "Scared", key: "fear" },
-  { name: "In-love", key: "love" },
-  { name: "Excited", key: "excitement" },
-  { name: "Relaxed", key: "relaxed" },
-];
-
-moods.forEach((m) => {
-  const btn = document.createElement("button");
-  btn.textContent = m.name;
-  btn.addEventListener("click", () => {
-    suggestMoviesByMood(m.key);
-    highlightActiveButton(btn);
-  });
-  moodButtonsContainer.appendChild(btn);
-});
+﻿// ==========================================================================
+// CINEMAX - MOOD EXPLORER SCRIPT
+// Based on original working code + layout improvements
+// ==========================================================================
 
 // --- TMDB Setup ---
 const TMDB_TOKEN =
@@ -40,7 +15,7 @@ const TMDB_OPTIONS = {
 };
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
-// --- Mood → TMDB Genres ---
+// --- Mood to TMDB Genres ---
 const moodToGenres = {
   happiness: [35],
   sadness: [18, 10751],
@@ -51,216 +26,186 @@ const moodToGenres = {
   relaxed: [16, 14],
 };
 
-// --- Suggest movies based on mood ---
-// --- Suggest movies based on mood (with Mood API integrated) ---
+// --- Create and Attach Mood Buttons (exact original pattern) ---
+const moodButtonsContainer = document.getElementById("moodButtonsContainer");
+
+const moods = [
+  { name: "Happy",   key: "happiness" },
+  { name: "Sad",     key: "sadness" },
+  { name: "Angry",   key: "anger" },
+  { name: "Scared",  key: "fear" },
+  { name: "In-love", key: "love" },
+  { name: "Excited", key: "excitement" },
+  { name: "Relaxed", key: "relaxed" },
+];
+
+moods.forEach((m) => {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.textContent = m.name;
+  btn.dataset.mood = m.key;
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    suggestMoviesByMood(m.key);
+    highlightActiveButton(btn);
+  });
+  if (moodButtonsContainer) moodButtonsContainer.appendChild(btn);
+});
+
+// --- Close/Reset button ---
+document.addEventListener("DOMContentLoaded", () => {
+  const closeBtn = document.getElementById("closeResultsBtn");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetMoodState();
+    });
+  }
+});
+
+// --- Reset State ---
+function resetMoodState() {
+  const overlay = document.getElementById("moodOverlay");
+  const movieSection = document.getElementById("movieSection");
+  if (overlay) overlay.classList.remove("has-results");
+  if (movieSection) {
+    movieSection.classList.remove("active");
+    setTimeout(() => { movieSection.style.display = "none"; }, 400);
+  }
+  document.querySelectorAll(".mood-buttons button").forEach(b => b.classList.remove("active"));
+}
+
+// --- Highlight active button ---
+function highlightActiveButton(activeBtn) {
+  document.querySelectorAll(".mood-buttons button").forEach(b => b.classList.remove("active"));
+  if (activeBtn) activeBtn.classList.add("active");
+}
+
+// --- Fetch movies by mood ---
 async function suggestMoviesByMood(userMood) {
-  movieSection.style.display = "block";
-  movieSection.classList.add("active");
+  const overlay     = document.getElementById("moodOverlay");
+  const movieSection    = document.getElementById("movieSection");
+  const movieContainer  = document.getElementById("movieContainer");
 
-  // Shrink hero when showing movies
-  document.querySelector(".hero").classList.add("shrink");
-
-  movieContainer.innerHTML = "<p>Loading movies...</p>";
-
-  // 🟢 Mood API integration (new 3rd API)
-  try {
-    const moodApiUrl = `https://mood-based-quote-api.p.rapidapi.com/${userMood}`;
-    const moodApiOptions = {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": "119a5a03a9mshc59cd19cf2c6aedp1db733jsnd34c9bcaac17",
-        "x-rapidapi-host": "mood-based-quote-api.p.rapidapi.com",
-      },
-    };
-
-    const response = await fetch(moodApiUrl, moodApiOptions);
-    if (response.ok) {
-      const quoteData = await response.json();
-      console.log("Mood API success:", quoteData);
-
-      // Optional: show quote result in UI
-      const quoteEl = document.createElement("p");
-      quoteEl.classList.add("mood-quote");
-      quoteEl.textContent =
-        quoteData.quote ||
-        "Feeling the vibe... here are movies that match your mood!";
-      movieContainer.prepend(quoteEl);
-    } else {
-      console.warn("Mood API failed or rate-limited.");
-    }
-  } catch (err) {
-    console.error("Mood API error:", err);
+  // Animate header upward
+  if (overlay) overlay.classList.add("has-results");
+  if (movieSection) {
+    movieSection.style.display = "block";
+    requestAnimationFrame(() => movieSection.classList.add("active"));
+  }
+  if (movieContainer) {
+    movieContainer.innerHTML = "<p style='color:#94a3b8;padding:2rem;text-align:center;width:100%;'>Loading movies...</p>";
   }
 
-  // 🎬 Fetch movies from TMDB (main API)
-  const genreIds = moodToGenres[userMood] || [35];
+  const genreIds  = moodToGenres[userMood] || [35];
   const randomPage = Math.floor(Math.random() * 5) + 1;
 
   try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?with_genres=${genreIds.join(
-        ","
-      )}&language=en-US&page=${randomPage}`,
+    const res  = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?with_genres=${genreIds.join(",")}&language=en-US&page=${randomPage}`,
       TMDB_OPTIONS
     );
     const data = await res.json();
-    const shuffled = data.results.sort(() => 0.5 - Math.random()).slice(0, 20);
-    displayMovies(shuffled);
+    if (data && data.results && data.results.length > 0) {
+      const shuffled = data.results.sort(() => 0.5 - Math.random()).slice(0, 20);
+      displayMovies(shuffled);
+    } else {
+      if (movieContainer) movieContainer.innerHTML = "<p style='color:#94a3b8;padding:2rem;text-align:center;width:100%;'>No movies found.</p>";
+    }
   } catch (err) {
-    console.error(err);
-    movieContainer.innerHTML = "<p>Failed to fetch movies.</p>";
+    console.error("TMDB error:", err);
+    if (movieContainer) movieContainer.innerHTML = "<p style='color:#ef4444;padding:2rem;text-align:center;width:100%;'>Failed to fetch movies.</p>";
   }
 }
-
 
 // --- Display movies ---
 function displayMovies(movies) {
+  const movieContainer = document.getElementById("movieContainer");
+  if (!movieContainer) return;
   movieContainer.innerHTML = "";
-  if (!movies || movies.length === 0) {
-    movieContainer.innerHTML = "<p>No movies found.</p>";
-    return;
-  }
-  movies.forEach((movie) => movieContainer.appendChild(createMovieCard(movie)));
+  movies.forEach(movie => movieContainer.appendChild(createMovieCard(movie)));
+  syncAllFavoriteButtons();
 }
 
-// --- Create movie card ---
+// --- Create movie card (Discover-matching layout) ---
 function createMovieCard(movie) {
   const poster = movie.poster_path
-    ? IMAGE_BASE_URL + movie.poster_path
+    ? `${IMAGE_BASE_URL}${movie.poster_path}`
     : "https://via.placeholder.com/500x750?text=No+Image";
+
+  const releaseDate = movie.release_date
+    ? new Date(movie.release_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : "Unknown date";
+
+  const rating = typeof movie.vote_average === "number"
+    ? movie.vote_average.toFixed(1)
+    : (movie.vote_average || "NR");
 
   const card = document.createElement("div");
   card.classList.add("movie-card");
+  card.dataset.movieId = movie.id;
   card.innerHTML = `
-    <img src="${poster}" alt="${movie.title}">
+    <img src="${poster}" alt="${movie.title || 'Movie Poster'}" loading="lazy">
     <div class="movie-info">
-      <h3>${movie.title}</h3>
-      <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}</p>
+      <h3>${movie.title || 'Untitled'}</h3>
+      <p class="movie-meta">
+        <span class="release-date">${releaseDate}</span>
+        <span class="meta-sep">•</span>
+        <span class="rating-badge">⭐ ${rating}</span>
+      </p>
     </div>
   `;
 
-  // Add favorite heart button & click navigation
   addFavoriteButton(movie, card);
-  makeCardClickable(card, movie);
 
-  return card;
-}
-
-// --- Helper: Make Card Clickable ---
-function makeCardClickable(card, movie) {
   card.addEventListener("click", (e) => {
     if (e.target.closest(".favorite-btn")) return;
     window.location.href = `../preview/preview.html?movieID=${movie.id}`;
   });
+
+  return card;
 }
 
-// --- Highlight Active Mood Button ---
-function highlightActiveButton(activeBtn) {
-
-  const allButtons = document.querySelectorAll(".mood-buttons button");
-  allButtons.forEach((btn) => btn.classList.remove("active"));
-  activeBtn.classList.add("active");
-}
-
-// --- Favorites setup ---
-let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-const mainContainer = document.querySelector("main.container");
-
-const favoritesSection = document.createElement("section");
-favoritesSection.classList.add("movies-section");
-favoritesSection.id = "favoritesSection";
-favoritesSection.innerHTML = `
-  <h2>Favorites ❤️</h2>
-  <div id="favoritesContainer" class="movie-grid"></div>
-`;
-mainContainer.appendChild(favoritesSection);
-
-const favoritesContainer = document.getElementById("favoritesContainer");
-
-// --- Helper: check if movie is in favorites ---
-function isMovieFavorited(id) {
-  return favorites.some((fav) => fav.id === id);
-}
-
-// --- Update Favorites Section ---
-function updateFavorites() {
-  favoritesContainer.innerHTML = "";
-  if (favorites.length === 0) {
-    favoritesContainer.innerHTML = "<p>No favorites yet.</p>";
-    return;
-  }
-
-  favorites.forEach((movie) => {
-    const poster = movie.poster_path
-      ? `${IMAGE_BASE_URL}${movie.poster_path}`
-      : "https://via.placeholder.com/500x750?text=No+Image";
-
-    const releaseDate = movie.release_date
-      ? new Date(movie.release_date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      : "Unknown date";
-
-    const card = document.createElement("div");
-    card.classList.add("movie-card", "large-card");
-    card.innerHTML = `
-      <img src="${poster}" alt="${movie.title}">
-      <div class="movie-info">
-        <h3>${movie.title}</h3>
-        <p>${releaseDate} • ⭐ ${movie.vote_average.toFixed(1)}</p>
-      </div>
-    `;
-
-    makeCardClickable(card, movie);
-    favoritesContainer.appendChild(card);
-  });
-
-  // Refresh hearts in all sections when favorites change
-  refreshAllFavoriteButtons();
-}
-
-// --- Add Favorite Button (Heart) ---
+// --- Add Favorite Button ---
 function addFavoriteButton(movie, container) {
   const heart = document.createElement("button");
   heart.classList.add("favorite-btn");
-  heart.innerHTML = isMovieFavorited(movie.id) ? "❤️" : "🤍";
+  heart.setAttribute("aria-label", "Favorite movie");
+
+  const favs = JSON.parse(localStorage.getItem("favorites")) || [];
+  const isExisting = favs.some(f => Number(f.id) === Number(movie.id));
+  heart.textContent = isExisting ? "❤️" : "🤍";
+  if (isExisting) heart.classList.add("active");
 
   heart.addEventListener("click", (e) => {
     e.stopPropagation();
-
-    if (isMovieFavorited(movie.id)) {
-      favorites = favorites.filter((fav) => fav.id !== movie.id);
-      heart.innerHTML = "🤍";
+    let currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+    const isFav = currentFavs.some(f => Number(f.id) === Number(movie.id));
+    if (isFav) {
+      currentFavs = currentFavs.filter(f => Number(f.id) !== Number(movie.id));
     } else {
-      favorites.push(movie);
-      heart.innerHTML = "❤️";
+      currentFavs.push(movie);
     }
-
-    // Update favorites + save
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    updateFavorites();
+    localStorage.setItem("favorites", JSON.stringify(currentFavs));
+    syncAllFavoriteButtons();
   });
 
   container.appendChild(heart);
 }
 
-// --- Refresh all visible heart buttons (for mood + discover sync) ---
-function refreshAllFavoriteButtons() {
-  document.querySelectorAll(".favorite-btn").forEach((btn) => {
-    const card = btn.closest(".movie-card");
-    if (!card) return;
-
-    const titleEl = card.querySelector("h3");
-    if (!titleEl) return;
-
-    const movieTitle = titleEl.textContent;
-    const matchedFav = favorites.find((m) => m.title === movieTitle);
-
-    btn.innerHTML = matchedFav ? "❤️" : "🤍";
+// --- Sync all heart buttons ---
+function syncAllFavoriteButtons() {
+  const favs   = JSON.parse(localStorage.getItem("favorites")) || [];
+  const favIds = new Set(favs.map(f => Number(f.id)));
+  document.querySelectorAll(".movie-card").forEach(card => {
+    const mId = Number(card.dataset.movieId);
+    const btn = card.querySelector(".favorite-btn");
+    if (btn && mId) {
+      const isFav = favIds.has(mId);
+      btn.textContent = isFav ? "❤️" : "🤍";
+      btn.classList.toggle("active", isFav);
+    }
   });
 }
 
-// --- Load Favorites on page start ---
-updateFavorites();
+window.addEventListener("storage", syncAllFavoriteButtons);

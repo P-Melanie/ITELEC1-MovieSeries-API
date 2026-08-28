@@ -12,13 +12,22 @@
   <section class="page">
     <div class="page-inner">
 
-      <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+      <!-- TOP NAV / SLEEK BACK BUTTON -->
+      <div class="top-nav-bar">
+        <button class="back-btn" onclick="history.back()">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back</span>
+        </button>
+      </div>
 
+      <!-- MAIN DETAIL GRID (SIDE-BY-SIDE ON DESKTOP & SMART GRID ON MOBILE) -->
       <div class="detail-grid">
+        <!-- 1. POSTER -->
         <div class="poster-col">
           <img id="poster" src="https://via.placeholder.com/260x390?text=Movie+Poster" alt="Movie Poster">
         </div>
 
+        <!-- 2. CONTENT / INFO COLUMN -->
         <div class="content-col">
           <div class="title-row">
             <h1 id="title">No movie selected.</h1>
@@ -26,7 +35,7 @@
             <p class="meta small" id="meta">Year · Rating · Runtime</p>
           </div>
 
-
+          <!-- YOUTUBE TRAILER -->
           <div class="trailer-wrapper">
             <div class="trailer-card">
               <iframe 
@@ -43,7 +52,8 @@
               </div>
             </div>
           </div>
-          
+
+          <!-- TAGS & STREAMING OPTIONS -->
           <div class="tags-container">
             <div class="tags" id="genre-tags"></div>
             <div class="watch-options" id="watch-options"></div>
@@ -51,18 +61,30 @@
         </div>
       </div>
 
-          <div class="description">
-            <div class="desc-box">
-              <p id="plot">Movie description will appear here.</p>
-              <hr>
-              <p><strong>Director</strong><br><span id="director">N/A</span></p>
-              <p><strong>Cast</strong><br><span id="cast">N/A</span></p>
+      <!-- 3. MOVIE DESCRIPTION / SYNOPSIS -->
+      <div class="description">
+        <div class="desc-box">
+          <h3 class="desc-title">Overview</h3>
+          <p id="plot">Movie description will appear here.</p>
+          <hr>
+          <div class="credits-grid">
+            <div class="credit-item">
+              <strong>Director</strong>
+              <span id="director">N/A</span>
+            </div>
+            <div class="credit-item">
+              <strong>Cast</strong>
+              <span id="cast">N/A</span>
             </div>
           </div>
+        </div>
+      </div>
+
     </div>
-    
   </section>
 
   <script src="preview.js"></script>
 </body>
 </html>
+
+

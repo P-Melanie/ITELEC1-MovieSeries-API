@@ -4,10 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Mood. Your Movie.</title>
-  
+
   <!-- CSS Links -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="../nav-bar/nav-bar.css" />
+  <link rel="stylesheet" href="../footer/footer.css" />
+  <link rel="stylesheet" href="../chatbot/chatbot.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
@@ -15,23 +17,29 @@
   <!-- Navbar Placeholder -->
   <div id="navbar-placeholder"></div>
 
+  <!-- Chatbot Placeholder -->
+  <div id="chatbot-placeholder"></div>
+
   <!-- Main Content -->
-  <section class="hero">        
-    <div class="overlay">        
-      <main class="container">
-        <h1 class="title">Your Mood. Your Movie.</h1>
-        <h2 class="subtitle">WHAT MOOD DO YOU WANT TO FEEL?</h2>
+  <section class="hero">
+    <div class="overlay" id="moodOverlay">
+      <main class="container mood-flow-wrapper" id="moodFlowWrapper">
 
-        <div id="moodButtonsContainer" class="mood-buttons"></div>
+        <!-- Header Group (Centered initially, smoothly animates upwards on active) -->
+        <div class="mood-header-group" id="moodHeaderGroup">
+          <h1 class="title">Your Mood. Your Movie.</h1>
+          <h2 class="subtitle">WHAT MOOD DO YOU WANT TO FEEL?</h2>
+          <div id="moodButtonsContainer" class="mood-buttons"></div>
+        </div>
 
-        <section class="movies-section" id="movieSection">
+        <!-- Movie Results Section -->
+        <section class="movies-section" id="movieSection" style="display:none;">
+          <button class="close-results-btn" id="closeResultsBtn" aria-label="Close movie results" title="Close results">
+            <i class="fas fa-times"></i>
+          </button>
           <div id="movieContainer" class="movie-grid"></div>
         </section>
-      <!-- Search Results Section (Hidden by Default) -->
-        <section id="searchResultsSection" class="movies-section" style="display: none;">
-          <h2>Search Results</h2>
-          <div id="searchResultsContainer" class="movie-grid"></div>
-        </section>
+
       </main>
     </div>
   </section>
@@ -39,7 +47,7 @@
   <!-- Footer Placeholder -->
   <div id="footer-placeholder"></div>
 
-  <!-- Scripts -->
+  <!-- IMPORTANT: mood script.js MUST load before nav-bar.js to avoid event conflicts -->
   <script src="script.js"></script>
   <script src="../nav-bar/nav-bar.js"></script>
   <script src="../chatbot/chatbot.js"></script>
@@ -50,6 +58,8 @@
       .then(r => r.text())
       .then(html => {
         document.getElementById("navbar-placeholder").innerHTML = html;
+        if (typeof updateActiveNavLink === "function") updateActiveNavLink();
+        if (typeof attachDirectNavbarEvents === "function") attachDirectNavbarEvents();
       })
       .catch(err => console.error("Navbar failed to load:", err));
 

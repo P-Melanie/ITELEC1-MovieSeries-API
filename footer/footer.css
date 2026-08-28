@@ -52,7 +52,7 @@ footer {
   width: clamp(72px, 7.5vw, 92px);
   height: clamp(72px, 7.5vw, 92px);
   object-fit: contain;
-  filter: drop-shadow(0 0 16px rgba(37, 99, 235, 0.5));
+  filter: none;
   transition: transform 0.3s ease;
   flex-shrink: 0;
 }
@@ -151,34 +151,139 @@ footer {
   backdrop-filter: blur(8px);
 }
 
-/* ====== RESPONSIVE BREAKPOINTS ====== */
+/* ====== RESPONSIVE BREAKPOINTS (EQUAL HEIGHT ALIGNMENT) ====== */
 @media (max-width: 850px) {
   footer {
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1.5rem 2.2rem;
   }
 
   .footer-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.75rem;
+    display: grid;
+    grid-template-columns: clamp(95px, 25vw, 135px) 1fr;
+    grid-template-areas:
+      "logo content"
+      "disclaimer disclaimer";
+    gap: 1.25rem 1.2rem;
+    align-items: stretch;
   }
 
-  .footer-left,
-  .footer-middle,
-  .footer-right {
+  .footer-left {
+    grid-area: logo;
     width: 100%;
-    flex: none;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .logo-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .logo-img {
+    width: clamp(48px, 12vw, 62px);
+    height: clamp(48px, 12vw, 62px);
+    object-fit: contain;
+    filter: none;
+  }
+
+  .logo-text {
+    margin-top: auto;
+  }
+
+  .logo-text .brand {
+    font-size: clamp(1.15rem, 3.2vw, 1.35rem);
+    line-height: 1.1;
+  }
+
+  .logo-text .brand-sub {
+    font-size: 0.72rem;
+    margin-top: 2px;
+  }
+
+  .footer-middle {
+    grid-area: content;
+    width: 100%;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.65rem;
+    text-align: left;
   }
 
   .footer-paragraph {
+    font-size: clamp(0.74rem, 2vw, 0.8rem);
+    line-height: 1.5;
     text-align: left;
+    margin: 0;
+  }
+
+  .footer-social-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .social-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+  }
+
+  .social-text {
+    font-size: 0.76rem;
+  }
+
+  .footer-right {
+    grid-area: disclaimer;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  .disclaimer-title {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .disclaimer-text {
+    font-size: 0.72rem;
+    padding: 0.75rem 0.9rem;
+    line-height: 1.45;
   }
 }
 
 @media (max-width: 480px) {
   footer {
-    padding: 2rem 1.25rem;
+    padding: 1.75rem 1.25rem 2rem;
+  }
+
+  .footer-inner {
+    grid-template-columns: clamp(80px, 24vw, 105px) 1fr;
+    gap: 1rem 0.85rem;
+  }
+
+  .logo-img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .logo-text .brand {
+    font-size: 1.1rem;
+  }
+
+  .footer-paragraph {
+    font-size: 0.74rem;
+    line-height: 1.45;
   }
 }
+
+
 
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CINEMAX - MOVIE PREVIEW / DETAILS (FULLY RESPONSIVE)
+   CINEMAX - MOVIE PREVIEW / DETAILS (DESKTOP RICH & MOBILE COMPACT)
    ========================================================================== */
 
 * {
@@ -13,11 +13,11 @@
   --card-bg: rgba(15, 23, 42, 0.7);
   --border-subtle: rgba(255, 255, 255, 0.08);
   --accent: #60a5fa;
-  --max-width: 1200px;
+  --max-width: 1450px;
 }
 
 html, body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", Roboto, sans-serif;
   background: radial-gradient(circle at top, #0d1226 0%, #050711 100%);
   color: #ffffff;
   min-height: 100vh;
@@ -25,13 +25,34 @@ html, body {
   overflow-x: hidden;
 }
 
-/* === PAGE CONTAINER === */
+/* === CUSTOM SCROLLBARS (MATCHES HOME & DISCOVER) === */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+
+/* === PAGE CONTAINER (EXPANDED TO REDUCE EMPTY SIDE GAP) === */
 .page {
-  padding: clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(2rem, 3.5vw, 3rem) clamp(1.25rem, 3vw, 2.5rem);
   width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .page-inner {
@@ -39,49 +60,62 @@ html, body {
   max-width: var(--max-width);
   margin: 0 auto;
   position: relative;
-  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 2.5vw, 2rem);
 }
 
-/* === BACK BUTTON === */
-.back-btn {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+/* === SLEEK TOP NAV & BACK BUTTON === */
+.top-nav-bar {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  padding: 0.55rem 1.25rem;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  outline: none;
 }
 
 .back-btn:hover {
   background: #2563eb;
   color: #ffffff;
   border-color: #3b82f6;
-  transform: scale(1.08);
+  transform: translateX(-4px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
-/* === MAIN DETAIL GRID === */
+.back-btn i {
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   DESKTOP DETAIL GRID: POSTER (LEFT) + CONTENT & TRAILER (RIGHT)
+   ========================================================================== */
 .detail-grid {
   display: grid;
-  grid-template-columns: minmax(240px, 320px) 1fr;
-  gap: clamp(1.5rem, 3.5vw, 3rem);
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  gap: clamp(2rem, 3.5vw, 3.5rem);
   align-items: start;
   width: 100%;
 }
 
-/* === POSTER COLUMN === */
+/* Poster Column */
 .poster-col {
   width: 100%;
   display: flex;
@@ -90,7 +124,7 @@ html, body {
 
 .poster-col img {
   width: 100%;
-  max-width: 320px;
+  max-width: 340px;
   height: auto;
   aspect-ratio: 2 / 3;
   border-radius: 16px;
@@ -98,9 +132,11 @@ html, body {
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 99, 235, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: #0f172a;
+  display: block;
 }
 
-/* === CONTENT COLUMN === */
+
+/* Content Column (Title, Trailer, Tags) */
 .content-col {
   width: 100%;
   display: flex;
@@ -108,41 +144,47 @@ html, body {
   gap: 1.25rem;
 }
 
-/* === TITLE AREA === */
+/* Title Area */
+.title-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
 .title-row h1 {
-  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
   font-weight: 700;
   color: #ffffff;
   letter-spacing: -0.01em;
   line-height: 1.2;
-  margin-bottom: 0.5rem;
+  margin: 0;
 }
 
 .meta {
   color: #94a3b8;
-  font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-  margin-bottom: 0.25rem;
+  font-size: clamp(0.85rem, 1.4vw, 0.95rem);
+  margin: 0;
 }
 
 .meta.small {
   color: #60a5fa;
-  font-size: clamp(0.8rem, 1.4vw, 0.9rem);
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  font-size: clamp(0.82rem, 1.3vw, 0.92rem);
+  font-weight: 600;
+  margin: 0;
 }
 
-/* === TRAILER SECTION === */
+/* YouTube Trailer */
 .trailer-wrapper {
   width: 100%;
 }
 
 .trailer-card {
   width: 100%;
-  border-radius: 16px;
+  border-radius: 18px;
   background: #0f172a;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
 }
 
@@ -168,28 +210,29 @@ html, body {
   font-style: italic;
 }
 
-/* === TAGS CONTAINER (GENRES + WATCH OPTIONS) === */
+/* Tags & Watch Options */
 .tags-container {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  width: 100%;
 }
 
 #genre-tags {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 #genre-tags span {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #e2e8f0;
-  font-size: 0.82rem;
+  font-size: clamp(0.75rem, 1.2vw, 0.82rem);
   font-weight: 500;
   border-radius: 20px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.3rem 0.75rem;
   transition: all 0.2s ease;
 }
 
@@ -201,45 +244,53 @@ html, body {
 
 #watch-options {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
 }
 
 #watch-options h3 {
-  font-size: 0.9rem;
+  font-size: clamp(0.82rem, 1.2vw, 0.9rem);
   font-weight: 600;
   color: #94a3b8;
+  margin: 0;
 }
 
 .provider-section {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .provider-badge {
   background: rgba(37, 99, 235, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.35);
   color: #93c5fd;
-  font-size: 0.82rem;
+  font-size: clamp(0.75rem, 1.2vw, 0.82rem);
   font-weight: 500;
   border-radius: 20px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.3rem 0.75rem;
 }
 
-/* === DESCRIPTION & CAST BOX === */
+.no-watch {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   MOVIE DESCRIPTION / SYNOPSIS (FULL WIDTH BELOW)
+   ========================================================================== */
 .description {
-  margin-top: clamp(1.5rem, 3vw, 2.5rem);
   width: 100%;
 }
 
 .desc-box {
   width: 100%;
   background: rgba(15, 23, 42, 0.7);
-  padding: clamp(1.25rem, 3vw, 2rem);
-  border-radius: 18px;
+  padding: clamp(1.4rem, 3.5vw, 2.2rem);
+  border-radius: 20px;
   color: #cbd5e1;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -248,19 +299,18 @@ html, body {
   line-height: 1.7;
 }
 
-.desc-box p {
-  font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+.desc-title {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 700;
+  color: #ffffff;
   margin-bottom: 0.75rem;
 }
 
-.desc-box p:last-child {
-  margin-bottom: 0;
-}
-
-.desc-box strong {
-  color: #f8fafc;
-  display: inline-block;
-  margin-bottom: 0.2rem;
+.desc-box p {
+  font-size: clamp(0.9rem, 1.4vw, 1rem);
+  color: #cbd5e1;
+  line-height: 1.7;
+  margin: 0;
 }
 
 .desc-box hr {
@@ -270,66 +320,211 @@ html, body {
   margin: 1.25rem 0;
 }
 
+.credits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.credit-item strong {
+  color: #f8fafc;
+  display: block;
+  font-size: 0.92rem;
+  margin-bottom: 0.25rem;
+}
+
+.credit-item span {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  display: block;
+}
+
 /* ==========================================================================
-   RESPONSIVE BREAKPOINTS
+   RESPONSIVE BREAKPOINTS (CLEAN FLOATING MOBILE SIDE-BY-SIDE)
    ========================================================================== */
 
 /* Tablets & Small Laptops (<= 850px) */
 @media (max-width: 850px) {
   .page {
-    padding: 1.5rem;
-  }
-
-  .page-inner {
-    padding-top: 55px;
+    padding: 2rem 1.5rem 2.5rem;
   }
 
   .detail-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .poster-col {
-    justify-content: center;
-  }
-
-  .poster-col img {
-    max-width: 260px;
-  }
-
-  .title-row {
-    text-align: center;
-  }
-
-  .tags-container {
-    align-items: center;
-  }
-
-  #genre-tags, #watch-options {
-    justify-content: center;
+    gap: 1.75rem;
   }
 }
 
-/* Mobile Devices (<= 480px) */
-@media (max-width: 480px) {
+/* Mobile Screens (<= 768px): Pure Floating Side-by-Side (No Clunky Cards) */
+@media (max-width: 768px) {
   .page {
-    padding: 1.25rem;
+    padding: 1.75rem 1.5rem 2.5rem;
   }
 
   .page-inner {
-    padding-top: 50px;
+    gap: 1.5rem;
+  }
+
+  /* Grid splits header side-by-side, then places trailer full width below */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: clamp(110px, 34vw, 140px) 1fr;
+    grid-template-areas:
+      "poster title"
+      "poster tags"
+      "trailer trailer";
+    gap: 0.4rem 1rem;
+    align-items: start;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .poster-col {
+    grid-area: poster;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
   }
 
   .poster-col img {
-    max-width: 200px;
+    width: 100%;
+    max-width: 140px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .content-col {
+    display: contents; /* Unwraps children into grid areas */
+  }
+
+  .title-row {
+    grid-area: title;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-align: left;
   }
 
   .title-row h1 {
-    font-size: 1.6rem;
+    font-size: clamp(1.15rem, 4.2vw, 1.45rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .meta {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin: 0;
+  }
+
+  .meta.small {
+    font-size: 0.78rem;
+    color: #60a5fa;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .tags-container {
+    grid-area: tags;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.2rem;
+  }
+
+  #genre-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  #genre-tags span {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+  }
+
+  #watch-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  #watch-options h3 {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin: 0;
+  }
+
+  .provider-badge {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+  }
+
+  .trailer-wrapper {
+    grid-area: trailer;
+    width: 100%;
+    margin-top: 0.85rem;
+    background: transparent;
+    padding: 0;
+    border: none;
+  }
+
+  .trailer-card {
+    border-radius: 14px;
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+
+  .description {
+    width: 100%;
+    margin-top: 0;
   }
 
   .desc-box {
-    padding: 1.2rem 1.1rem;
+    border-radius: 14px;
+    padding: 1.25rem 1rem;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .credits-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 }
+
+/* Small Phones (<= 480px) */
+@media (max-width: 480px) {
+  .page {
+    padding: 1.5rem 1.25rem 2rem;
+  }
+
+  .detail-grid {
+    grid-template-columns: clamp(105px, 35vw, 130px) 1fr;
+    gap: 0.4rem 0.85rem;
+  }
+
+  .back-btn {
+    padding: 0.45rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+
+
 

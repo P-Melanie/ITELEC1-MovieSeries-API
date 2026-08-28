@@ -28,8 +28,8 @@ const highlightGrid = document.querySelector(".highlight-grid");
 const actionContainer = document.getElementById("actionContainer");
 const cartoonContainer = document.getElementById("cartoonContainer");
 
-// --- Favorites setup ---
-let favorites = [];
+// --- Favorites State Synchronization ---
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 const mainContainer = document.querySelector("main.container");
 const favoritesSection = document.createElement("section");
 favoritesSection.classList.add("movies-section");
@@ -41,12 +41,33 @@ favoritesSection.innerHTML = `
 mainContainer.appendChild(favoritesSection);
 const favoritesContainer = document.getElementById("favoritesContainer");
 
+function syncAllFavoriteButtons() {
+  const currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+  const favIds = new Set(currentFavs.map((f) => Number(f.id)));
+  document.querySelectorAll(".movie-card").forEach((card) => {
+    const mId = Number(card.dataset.movieId);
+    const btn = card.querySelector(".favorite-btn");
+    if (btn && mId) {
+      const isFav = favIds.has(mId);
+      btn.textContent = isFav ? "❤️" : "🤍";
+      if (isFav) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    }
+  });
+}
+
 function updateFavorites() {
+  favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   favoritesContainer.innerHTML = "";
   if (favorites.length === 0) {
     favoritesContainer.innerHTML = "<p>No favorites yet.</p>";
+    syncAllFavoriteButtons();
     return;
   }
+
   favorites.forEach((movie) => {
     const poster = movie.poster_path
       ? `${imageBaseURL}${movie.poster_path}`
@@ -60,50 +81,56 @@ function updateFavorites() {
         })
       : "Unknown date";
 
+    const rating = (typeof movie.vote_average === "number") ? movie.vote_average.toFixed(1) : (movie.vote_average || "N/A");
+
     const card = document.createElement("div");
     card.classList.add("movie-card", "large-card");
+    card.dataset.movieId = movie.id;
+    card.style.position = "relative";
     card.innerHTML = `
       <img src="${poster}" alt="${movie.title}">
       <div class="movie-info">
         <h3>${movie.title}</h3>
-        <p>${releaseDate} • ⭐ ${movie.vote_average.toFixed(1)}</p>
+        <p class="movie-meta"><span class="release-date">${releaseDate}</span> <span class="meta-sep">•</span> <span class="rating-badge">⭐ ${rating}</span></p>
       </div>
     `;
 
+    // ✅ Add favorite button so user can unfavorite
+    addFavoriteButton(movie, card);
     makeCardClickable(card, movie);
     favoritesContainer.appendChild(card);
   });
+
+  syncAllFavoriteButtons();
 }
 
 function addFavoriteButton(movie, container) {
   const heart = document.createElement("button");
-  heart.textContent = "🤍";
   heart.classList.add("favorite-btn");
-  heart.style.position = "absolute";
-  heart.style.top = "8px";
-  heart.style.right = "8px";
-  heart.style.background = "transparent";
-  heart.style.border = "none";
-  heart.style.fontSize = "22px";
-  heart.style.cursor = "pointer";
+  heart.setAttribute("aria-label", "Favorite movie");
 
-  const existing = favorites.some((fav) => fav.id === movie.id);
-  if (existing) heart.textContent = "❤️";
+  const currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+  const isExisting = currentFavs.some((fav) => Number(fav.id) === Number(movie.id));
+  heart.textContent = isExisting ? "❤️" : "🤍";
+  if (isExisting) heart.classList.add("active");
 
   heart.addEventListener("click", (e) => {
     e.stopPropagation();
-    const isFavorited = favorites.some((fav) => fav.id === movie.id);
-    if (isFavorited) {
-      favorites = favorites.filter((fav) => fav.id !== movie.id);
-      heart.textContent = "🤍";
-    } else {
-      favorites.push(movie);
-      heart.textContent = "❤️";
-    }
-    updateFavorites();
+    let currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+    const isFavorited = currentFavs.some((fav) => Number(fav.id) === Number(movie.id));
 
+    if (isFavorited) {
+      currentFavs = currentFavs.filter((fav) => Number(fav.id) !== Number(movie.id));
+    } else {
+      currentFavs.push(movie);
+    }
+
+    favorites = currentFavs;
     localStorage.setItem("favorites", JSON.stringify(favorites));
 
+    // Re-render favorites section AND immediately synchronize all hearts on page
+    updateFavorites();
+    syncAllFavoriteButtons();
   });
   container.appendChild(heart);
 }
@@ -122,14 +149,17 @@ function createMovieCard(movie) {
       })
     : "Unknown date";
 
+  const rating = (typeof movie.vote_average === "number") ? movie.vote_average.toFixed(1) : (movie.vote_average || "N/A");
+
   const card = document.createElement("div");
   card.classList.add("movie-card", "large-card");
+  card.dataset.movieId = movie.id;
   card.style.position = "relative";
   card.innerHTML = `
     <img src="${poster}" alt="${movie.title}">
     <div class="movie-info">
       <h3>${movie.title}</h3>
-      <p>${releaseDate} • ⭐ ${movie.vote_average.toFixed(1)}</p>
+      <p class="movie-meta"><span class="release-date">${releaseDate}</span> <span class="meta-sep">•</span> <span class="rating-badge">⭐ ${rating}</span></p>
     </div>
   `;
   addFavoriteButton(movie, card);
@@ -140,7 +170,16 @@ function createMovieCard(movie) {
 window.addEventListener("DOMContentLoaded", () => {
   favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   updateFavorites();
+  syncAllFavoriteButtons();
 });
+
+window.addEventListener("storage", () => {
+  favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  updateFavorites();
+  syncAllFavoriteButtons();
+});
+
+
 
 
 // --- Display Functions ---
