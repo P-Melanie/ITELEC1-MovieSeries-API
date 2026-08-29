@@ -20,11 +20,21 @@ html, body {
 
 /* --- Container Layout --- */
 .container {
+  display: flex;
+  flex-direction: column;
   max-width: 100%;
   margin: 0 auto;
   padding: 95px clamp(1.5rem, 5vw, 4rem) 3rem;
   width: 100%;
   box-sizing: border-box;
+}
+
+#favoritesWrapper {
+  width: 100%;
+}
+
+#favoritesWrapper h2 {
+  margin-top: 1.5rem;
 }
 
 
@@ -49,22 +59,29 @@ h2 {
   align-items: center;
   gap: clamp(1.5rem, 3.5vw, 3.5rem);
   margin-bottom: 2rem;
+  margin-top: 1rem;
   position: relative;
   width: 100%;
 }
 
 .year {
+  display: flex;
+  flex-direction: column;
   font-size: clamp(4.5rem, 10vw, 12rem);
   font-weight: 800;
-  color: #ffffff;
-  opacity: 0.25;
   line-height: 0.85;
   flex-shrink: 0;
   text-align: left;
   user-select: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 40%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 15px rgba(255, 255, 255, 0.2));
+}
+
+.year .y-part {
+  display: block;
 }
 
 .highlight {
@@ -299,17 +316,32 @@ h2 {
     padding: 80px 1.5rem 2rem;
   }
 
+  /* On mobile: Move Favorites to the very top */
+  #favoritesWrapper {
+    order: -1;
+    margin-bottom: 0.5rem;
+  }
+
+  #favoritesWrapper h2 {
+    margin-top: 0.25rem;
+  }
+
   .highlight-section {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    margin-top: 1rem;
   }
 
   .year {
-    font-size: 3.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    font-size: clamp(2.4rem, 8vw, 3.5rem);
     line-height: 1;
     margin-left: 0;
-    opacity: 0.4;
+    opacity: 0.9;
+    letter-spacing: -0.02em;
   }
 
   .highlight {
@@ -333,7 +365,9 @@ h2 {
   }
 
   .year {
-    font-size: 2.8rem;
+    display: flex;
+    flex-direction: row;
+    font-size: 2.5rem;
   }
 }
 

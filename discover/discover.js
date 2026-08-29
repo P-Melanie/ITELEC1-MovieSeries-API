@@ -1,14 +1,8 @@
-// --- Load navbar (unchanged) ---
-  fetch("../nav-bar/nav.html")
-    .then((response) => response.text())
-    .then((data) => {
-      document.getElementById("navbar-placeholder").innerHTML = data;
-  })
-  .catch((error) => {
-    console.error("Failed to load navbar:", error);
-  });
+// ==========================================================================
+// CINEMAX - DISCOVER SCRIPT (2025 HIGHLIGHTS, FAVORITES, MULTI-GENRE ROWS)
+// ==========================================================================
 
-// --- TMDB token and options ---
+// --- TMDB Token and Options ---
 const token =
   "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMjA5YTIzMzJhNmNhMDBiZTlhZmU3ZDE1OTFlOTQ3ZCIsIm5iZiI6MTc2MTU0NzI0MS44MjcwMDAxLCJzdWIiOiI2OGZmMTNlOTE1NjE4ZjAzOThkYTAyMjAiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.7BrLe9Tt81ZEIg2T0zV8elagGYC78noCauoVOJIMJHE";
 
@@ -22,24 +16,19 @@ const options = {
 
 const imageBaseURL = "https://image.tmdb.org/t/p/w500";
 
-// --- Containers ---
-const movieContainer = document.getElementById("movieContainer");
+// --- DOM Containers ---
 const highlightGrid = document.querySelector(".highlight-grid");
+const favoritesContainer = document.getElementById("favoritesContainer");
+const movieContainer = document.getElementById("movieContainer");
 const actionContainer = document.getElementById("actionContainer");
+const fantasyContainer = document.getElementById("fantasyContainer");
+const horrorContainer = document.getElementById("horrorContainer");
+const sciFiContainer = document.getElementById("sciFiContainer");
+const romanceContainer = document.getElementById("romanceContainer");
 const cartoonContainer = document.getElementById("cartoonContainer");
 
-// --- Favorites State Synchronization ---
+// --- Favorites State Management ---
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-const mainContainer = document.querySelector("main.container");
-const favoritesSection = document.createElement("section");
-favoritesSection.classList.add("movies-section");
-favoritesSection.id = "favoritesSection";
-favoritesSection.innerHTML = `
-  <h2>Favorites ❤️</h2>
-  <div id="favoritesContainer" class="movie-grid"></div>
-`;
-mainContainer.appendChild(favoritesSection);
-const favoritesContainer = document.getElementById("favoritesContainer");
 
 function syncAllFavoriteButtons() {
   const currentFavs = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -61,43 +50,17 @@ function syncAllFavoriteButtons() {
 
 function updateFavorites() {
   favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  if (!favoritesContainer) return;
   favoritesContainer.innerHTML = "";
+
   if (favorites.length === 0) {
-    favoritesContainer.innerHTML = "<p>No favorites yet.</p>";
+    favoritesContainer.innerHTML = "<p style='color:#94a3b8;padding:1rem 0;font-size:0.95rem;'>No favorites yet. Click the heart icon on any movie to add it here!</p>";
     syncAllFavoriteButtons();
     return;
   }
 
   favorites.forEach((movie) => {
-    const poster = movie.poster_path
-      ? `${imageBaseURL}${movie.poster_path}`
-      : "https://via.placeholder.com/500x750?text=No+Image";
-
-    const releaseDate = movie.release_date
-      ? new Date(movie.release_date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      : "Unknown date";
-
-    const rating = (typeof movie.vote_average === "number") ? movie.vote_average.toFixed(1) : (movie.vote_average || "N/A");
-
-    const card = document.createElement("div");
-    card.classList.add("movie-card", "large-card");
-    card.dataset.movieId = movie.id;
-    card.style.position = "relative";
-    card.innerHTML = `
-      <img src="${poster}" alt="${movie.title}">
-      <div class="movie-info">
-        <h3>${movie.title}</h3>
-        <p class="movie-meta"><span class="release-date">${releaseDate}</span> <span class="meta-sep">•</span> <span class="rating-badge">⭐ ${rating}</span></p>
-      </div>
-    `;
-
-    // ✅ Add favorite button so user can unfavorite
-    addFavoriteButton(movie, card);
-    makeCardClickable(card, movie);
+    const card = createMovieCard(movie);
     favoritesContainer.appendChild(card);
   });
 
@@ -128,7 +91,6 @@ function addFavoriteButton(movie, container) {
     favorites = currentFavs;
     localStorage.setItem("favorites", JSON.stringify(favorites));
 
-    // Re-render favorites section AND immediately synchronize all hearts on page
     updateFavorites();
     syncAllFavoriteButtons();
   });
@@ -149,147 +111,31 @@ function createMovieCard(movie) {
       })
     : "Unknown date";
 
-  const rating = (typeof movie.vote_average === "number") ? movie.vote_average.toFixed(1) : (movie.vote_average || "N/A");
+  const rating = (typeof movie.vote_average === "number")
+    ? movie.vote_average.toFixed(1)
+    : (movie.vote_average || "N/A");
 
   const card = document.createElement("div");
   card.classList.add("movie-card", "large-card");
   card.dataset.movieId = movie.id;
   card.style.position = "relative";
   card.innerHTML = `
-    <img src="${poster}" alt="${movie.title}">
+    <img src="${poster}" alt="${movie.title || 'Movie Poster'}" loading="lazy">
     <div class="movie-info">
-      <h3>${movie.title}</h3>
-      <p class="movie-meta"><span class="release-date">${releaseDate}</span> <span class="meta-sep">•</span> <span class="rating-badge">⭐ ${rating}</span></p>
+      <h3>${movie.title || 'Untitled'}</h3>
+      <p class="movie-meta">
+        <span class="release-date">${releaseDate}</span>
+        <span class="meta-sep">•</span>
+        <span class="rating-badge">⭐ ${rating}</span>
+      </p>
     </div>
   `;
+
   addFavoriteButton(movie, card);
   makeCardClickable(card, movie);
   return card;
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  updateFavorites();
-  syncAllFavoriteButtons();
-});
-
-window.addEventListener("storage", () => {
-  favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  updateFavorites();
-  syncAllFavoriteButtons();
-});
-
-
-
-
-// --- Display Functions ---
-function displayMovies(movies) {
-  if (!movieContainer) return;
-  movieContainer.innerHTML = "";
-  if (!movies || movies.length === 0) {
-    movieContainer.innerHTML = `<p>No movies found.</p>`;
-    return;
-  }
-
-  const shuffledMovies = movies.sort(() => Math.random() - 0.5).slice(0, 8);
-  shuffledMovies.forEach((movie) => {
-    const movieCard = createMovieCard(movie);
-    movieContainer.appendChild(movieCard);
-  });
-}
-
-function display2025Highlights(movies) {
-  if (!highlightGrid) return;
-  highlightGrid.innerHTML = "";
-
-  const movies2025 = movies
-    .filter((movie) => movie.release_date && movie.release_date.startsWith("2025"))
-    .slice(0, 20);
-
-  if (movies2025.length === 0) {
-    highlightGrid.innerHTML = `<p>No 2025 movies found.</p>`;
-    return;
-  }
-
-  movies2025.forEach((movie) => {
-    const card = createMovieCard(movie);
-    highlightGrid.appendChild(card);
-  });
-}
-
-function displayActionMovies(movies) {
-  if (!actionContainer) return;
-  actionContainer.innerHTML = "";
-  movies.slice(0, 20).forEach((movie) => {
-    const card = createMovieCard(movie);
-    actionContainer.appendChild(card);
-  });
-}
-
-function displayCartoonMovies(movies) {
-  if (!cartoonContainer) return;
-  cartoonContainer.innerHTML = "";
-  movies.slice(0, 20).forEach((movie) => {
-    const card = createMovieCard(movie);
-    cartoonContainer.appendChild(card);
-  });
-}
-
-// --- Initial Fetches ---
-fetch("https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1", options)
-  .then((res) => res.json())
-  .then((data) => display2025Highlights(data.results))
-  .catch((err) => console.error(err));
-
-fetch("https://api.themoviedb.org/3/movie/popular?language=en-US&page=1", options)
-  .then((res) => res.json())
-  .then((data) => displayMovies(data.results))
-  .catch((err) => console.error(err));
-
-fetch("https://api.themoviedb.org/3/discover/movie?with_genres=28&language=en-US&page=1", options)
-  .then((res) => res.json())
-  .then((data) => displayActionMovies(data.results))
-  .catch((err) => console.error(err));
-
-fetch("https://api.themoviedb.org/3/discover/movie?with_genres=16&language=en-US&page=1", options)
-  .then((res) => res.json())
-  .then((data) => displayCartoonMovies(data.results))
-  .catch((err) => console.error(err));
-
-
-// --- Scroll Bar Addition Animation ---
-  document.querySelectorAll('.highlight-grid, .movie-grid').forEach(track => {
-    let isDown = false, startX, scrollLeft;
-    track.addEventListener('mousedown', e => {
-      isDown = true;
-      track.classList.add('dragging');
-      startX = e.pageX - track.offsetLeft;
-      scrollLeft = track.scrollLeft;
-      e.preventDefault();
-    });
-
-    window.addEventListener('mouseup', () => { isDown = false; track.classList.remove('dragging'); });
-    track.addEventListener('mousemove', e => {
-      if (!isDown) return;
-      const x = e.pageX - track.offsetLeft;
-      const walk = (x - startX) * 1.2; // scroll speed
-      track.scrollLeft = scrollLeft - walk;
-    });
-
-    // touch support:
-    track.addEventListener('touchstart', e => { startX = e.touches[0].pageX - track.offsetLeft; scrollLeft = track.scrollLeft; });
-    track.addEventListener('touchmove', e => {
-      const x = e.touches[0].pageX - track.offsetLeft;
-      const walk = (x - startX) * 1.2;
-      track.scrollLeft = scrollLeft - walk;
-    });
-  });
-
-
-// --- Helper: Make Card Clickable ---
-
-
-// --- Clickable cards ---
 function makeCardClickable(card, movie) {
   card.addEventListener("click", (e) => {
     if (e.target.classList && e.target.classList.contains("favorite-btn")) return;
@@ -297,7 +143,141 @@ function makeCardClickable(card, movie) {
   });
 }
 
-// --- Escape HTML helper ---
-function escapeHtml(text) {
-  return String(text).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+// --- Generic Section Population Helper ---
+function renderMoviesToContainer(container, movies, limit = 20) {
+  if (!container) return;
+  container.innerHTML = "";
+  if (!movies || movies.length === 0) {
+    container.innerHTML = `<p style="color:#94a3b8;padding:1rem 0;">No movies found.</p>`;
+    return;
+  }
+  movies.slice(0, limit).forEach((movie) => {
+    container.appendChild(createMovieCard(movie));
+  });
+  syncAllFavoriteButtons();
 }
+
+// --- 2025 Highlights Loader ---
+function load2025Highlights() {
+  fetch("https://api.themoviedb.org/3/discover/movie?primary_release_year=2025&sort_by=popularity.desc&include_adult=false&language=en-US&page=1", options)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data && data.results && data.results.length > 0) {
+        renderMoviesToContainer(highlightGrid, data.results, 20);
+      } else {
+        // Fallback to top rated / upcoming
+        fetch("https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1", options)
+          .then((res) => res.json())
+          .then((fallbackData) => renderMoviesToContainer(highlightGrid, fallbackData.results, 20))
+          .catch((err) => console.error(err));
+      }
+    })
+    .catch((err) => {
+      console.error("2025 Highlights fetch error:", err);
+      if (highlightGrid) highlightGrid.innerHTML = `<p style="color:#ef4444;padding:1rem 0;">Failed to load Highlights.</p>`;
+    });
+}
+
+// --- Multi-Category Loaders ---
+function loadAllMovieCategories() {
+  // 1. 2025 Highlights
+  load2025Highlights();
+
+  // 2. Latest / Popular Movies
+  fetch("https://api.themoviedb.org/3/movie/popular?language=en-US&page=1", options)
+    .then((res) => res.json())
+    .then((data) => renderMoviesToContainer(movieContainer, data.results, 20))
+    .catch((err) => console.error(err));
+
+  // 3. Action Movies (Genre 28)
+  fetch("https://api.themoviedb.org/3/discover/movie?with_genres=28&language=en-US&sort_by=popularity.desc&page=1", options)
+    .then((res) => res.json())
+    .then((data) => renderMoviesToContainer(actionContainer, data.results, 20))
+    .catch((err) => console.error(err));
+
+  // 4. Fantasy Movies (Genre 14)
+  fetch("https://api.themoviedb.org/3/discover/movie?with_genres=14&language=en-US&sort_by=popularity.desc&page=1", options)
+    .then((res) => res.json())
+    .then((data) => renderMoviesToContainer(fantasyContainer, data.results, 20))
+    .catch((err) => console.error(err));
+
+  // 5. Horror Movies (Genre 27)
+  fetch("https://api.themoviedb.org/3/discover/movie?with_genres=27&language=en-US&sort_by=popularity.desc&page=1", options)
+    .then((res) => res.json())
+    .then((data) => renderMoviesToContainer(horrorContainer, data.results, 20))
+    .catch((err) => console.error(err));
+
+  // 6. Science Fiction Movies (Genre 878)
+  fetch("https://api.themoviedb.org/3/discover/movie?with_genres=878&language=en-US&sort_by=popularity.desc&page=1", options)
+    .then((res) => res.json())
+    .then((data) => renderMoviesToContainer(sciFiContainer, data.results, 20))
+    .catch((err) => console.error(err));
+
+  // 7. Romance Movies (Genre 10749)
+  fetch("https://api.themoviedb.org/3/discover/movie?with_genres=10749&language=en-US&sort_by=popularity.desc&page=1", options)
+    .then((res) => res.json())
+    .then((data) => renderMoviesToContainer(romanceContainer, data.results, 20))
+    .catch((err) => console.error(err));
+
+  // 8. Cartoons / Animation (Genre 16)
+  fetch("https://api.themoviedb.org/3/discover/movie?with_genres=16&language=en-US&sort_by=popularity.desc&page=1", options)
+    .then((res) => res.json())
+    .then((data) => renderMoviesToContainer(cartoonContainer, data.results, 20))
+    .catch((err) => console.error(err));
+}
+
+// --- Attach Drag & Touch Scroll to All Grids ---
+function initScrollDrag() {
+  document.querySelectorAll(".highlight-grid, .movie-grid").forEach((track) => {
+    if (track.dataset.dragInit) return;
+    track.dataset.dragInit = "true";
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    track.addEventListener("mousedown", (e) => {
+      if (e.target.closest("button") || e.target.closest(".favorite-btn")) return;
+      isDown = true;
+      track.classList.add("dragging");
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+
+    window.addEventListener("mouseup", () => {
+      isDown = false;
+      track.classList.remove("dragging");
+    });
+
+    track.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.3;
+      track.scrollLeft = scrollLeft - walk;
+    });
+
+    track.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    }, { passive: true });
+
+    track.addEventListener("touchmove", (e) => {
+      const x = e.touches[0].pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.3;
+      track.scrollLeft = scrollLeft - walk;
+    }, { passive: true });
+  });
+}
+
+// --- Initialize on Page Load ---
+document.addEventListener("DOMContentLoaded", () => {
+  updateFavorites();
+  loadAllMovieCategories();
+  setTimeout(initScrollDrag, 500);
+});
+
+window.addEventListener("storage", () => {
+  updateFavorites();
+  syncAllFavoriteButtons();
+});

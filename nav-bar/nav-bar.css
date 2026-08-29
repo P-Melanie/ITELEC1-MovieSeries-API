@@ -57,34 +57,45 @@ html {
 
 
 /* ===== LOGO (LEFT ALIGNED) ===== */
+.navbar .logo,
 .logo {
   justify-self: start;
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 8px;
   text-decoration: none;
   cursor: pointer;
   flex-shrink: 0;
+  line-height: 1;
 }
 
+.navbar .logo img,
 .logo img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
+  display: block;
   transition: transform 0.25s ease;
 }
 
+.navbar .logo:hover img,
 .logo:hover img {
   transform: scale(1.05);
 }
 
-.logo a,
+.navbar .logo a,
+.navbar .logo .brand,
 .logo .brand {
   color: #ffffff;
   font-size: 1.35rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-decoration: none;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
   font-family: "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
 }
 
