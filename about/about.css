@@ -41,7 +41,7 @@ body::before {
    ABOUT HERO SECTION
    ========================================================================== */
 .about-section {
-  padding: 110px clamp(1rem, 4vw, 3rem) 3rem;
+  padding: 110px clamp(1.5rem, 4vw, 3.5rem) 3rem;
   color: white;
   display: flex;
   justify-content: center;
@@ -51,7 +51,7 @@ body::before {
 .about-container {
   display: flex;
   flex-direction: column;
-  max-width: 1200px;
+  max-width: 1240px;
   width: 100%;
   gap: 2rem;
 }
@@ -85,6 +85,7 @@ body::before {
   background: linear-gradient(135deg, #ffffff 60%, #93c5fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.6));
 }
 
 .about-logo .tagline {
@@ -96,19 +97,36 @@ body::before {
 
 /* Content Glassmorphism Card */
 .about-content {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 20px;
   padding: clamp(1.5rem, 4vw, 3rem);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   line-height: 1.75;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle inner top sheen */
+.about-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  pointer-events: none;
 }
 
 .about-content p {
   margin-bottom: 1.25rem;
-  color: #cbd5e1;
+  color: #d0d4da;
   font-size: clamp(0.95rem, 1.6vw, 1.05rem);
   text-align: justify;
 }
@@ -130,7 +148,8 @@ body::before {
    ========================================================================== */
 .team-section {
   width: 100%;
-  padding: 4rem clamp(1rem, 4vw, 3rem);
+  /* Match about-section side padding exactly so titles & cards align */
+  padding: 4rem clamp(1.5rem, 4vw, 3.5rem);
   background: linear-gradient(180deg, rgba(3, 7, 20, 0.95) 0%, rgba(8, 18, 41, 0.98) 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   color: white;
@@ -145,6 +164,9 @@ body::before {
   margin-bottom: 1rem;
   text-align: center;
   letter-spacing: -0.02em;
+  /* Keep text within the same max-width as about-container */
+  width: 100%;
+  max-width: 1240px;
 }
 
 .team-section h2 span {
@@ -154,20 +176,21 @@ body::before {
 .team-description {
   font-size: clamp(0.95rem, 1.8vw, 1.1rem);
   color: #94a3b8;
-  max-width: 850px;
+  max-width: 1240px;
+  width: 100%;
   text-align: center;
   line-height: 1.7;
   margin-bottom: 3rem;
 }
 
-/* Responsive Team Grid */
+/* Responsive Team Grid - 3 cards per row on desktop */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 2.5vw, 2.25rem);
   justify-items: center;
   width: 100%;
-  max-width: 1150px;
+  max-width: 1240px;
   margin: 0 auto;
 }
 
@@ -179,7 +202,6 @@ body::before {
   padding: 2rem 1.5rem;
   text-align: center;
   width: 100%;
-  max-width: 320px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
   display: flex;
@@ -190,9 +212,12 @@ body::before {
 }
 
 .team-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 99, 235, 0.35);
-  border-color: rgba(96, 165, 250, 0.4);
+  transform: translateY(-4px);
+  /* Keeps the solid ring visible but clean */
+  border: 2px solid rgba(96, 165, 250, 0.8); 
+
+  /* Creates a tight, clean glow without the messy spread */
+  box-shadow: 0 0 12px 0 rgba(96, 165, 250, 0.6);
 }
 
 .team-card .avatar {
@@ -247,12 +272,35 @@ body::before {
   transition: all 0.25s ease;
 }
 
-.socials a:hover {
+/* Facebook Hover - Blue */
+.socials a:hover:has(.fa-facebook-f),
+.socials a[href*="facebook"]:hover {
   color: #ffffff;
-  background: #2563eb;
+  background: #1877f2;
   border-color: #3b82f6;
   transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 4px 14px rgba(24, 119, 242, 0.55), 0 0 16px rgba(24, 119, 242, 0.4);
+}
+
+/* Instagram Hover - Pink Gradient */
+.socials a:hover:has(.fa-instagram),
+.socials a[href*="instagram"]:hover {
+  color: #ffffff;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-color: #e1306c;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 14px rgba(225, 48, 108, 0.55), 0 0 16px rgba(225, 48, 108, 0.4);
+}
+
+/* GitHub Hover - Black with Radiant Glow Effect */
+.socials a:hover:has(.fa-github),
+.socials a[href*="github"]:hover {
+  color: #ffffff;
+  background: #0d1117;
+  border-color: transparent; /* Tinanggal yung matapang na white ring */
+  transform: translateY(-3px);
+  /* Single, softer glow na kapantay ng FB at IG intensity */
+  box-shadow: 0 0 12px 0 rgba(255, 255, 255, 0.4); 
 }
 
 /* ==========================================================================
@@ -282,6 +330,13 @@ body::before {
 /* ==========================================================================
    RESPONSIVE BREAKPOINTS
    ========================================================================== */
+@media (max-width: 992px) {
+  .team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem;
+  }
+}
+
 @media (max-width: 768px) {
   .about-section {
     padding: 90px 1.5rem 2.5rem;
@@ -296,18 +351,18 @@ body::before {
   }
 
   .team-grid {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 580px) {
   .about-section {
-    padding: 80px 1.25rem 2rem;
+    padding: 80px 1rem 2rem;
   }
 
   .team-section {
-    padding: 2.5rem 1.25rem;
+    padding: 2.5rem 1rem;
   }
 
   .about-content {
@@ -315,10 +370,67 @@ body::before {
     border-radius: 14px;
   }
 
+  /* 2 cards per row on mobile with compact proportions */
   .team-grid {
-    grid-template-columns: 1fr;
-    max-width: 290px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .team-card {
+    padding: 1.25rem 0.6rem;
+    border-radius: 14px;
+    max-width: 100%;
+  }
+
+  .team-card .avatar {
+    width: 75px;
+    height: 75px;
+    border-width: 2.5px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+  }
+
+  .name {
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+
+  .socials {
+    gap: 0.4rem;
+  }
+
+  .socials a {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
   }
 }
 
+@media (max-width: 380px) {
+  .team-grid {
+    gap: 0.6rem;
+  }
+
+  .team-card {
+    padding: 1rem 0.4rem;
+  }
+
+  .team-card .avatar {
+    width: 65px;
+    height: 65px;
+  }
+
+  .name {
+    font-size: 0.88rem;
+  }
+
+  .socials a {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+}
 
