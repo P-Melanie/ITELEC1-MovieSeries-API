@@ -98,24 +98,29 @@ const GENRES = {
   popular: "28",
 };
 
-async function getWeatherAndMood() {
-  navigator.geolocation.getCurrentPosition(async position => {
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
+async function getWeatherByCoords(lat, lon, defaultCity = "") {
+  try {
     const weatherRes = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${WEATHER_API_KEY}`
     );
     const weather = await weatherRes.json();
+    if (!weather || !weather.main) {
+      throw new Error("Weather API returned invalid data");
+    }
+
     const temp = Math.round(weather.main.temp);
-    const condition = weather.weather[0].main.toLowerCase();
-    const icon = weather.weather[0].icon;
-    const city = weather.name;
+    const condition = weather.weather && weather.weather[0] ? weather.weather[0].main.toLowerCase() : "clear";
+    const icon = weather.weather && weather.weather[0] ? weather.weather[0].icon : "01d";
+    const city = weather.name || defaultCity || "Tanauan";
 
     // LEFT SIDE DETAILS
-    document.getElementById("weatherTemp").textContent = `${temp}°C`;
-    document.getElementById("weatherLocation").textContent = city;
-    document.getElementById("weatherIcon").src =
-      `https://openweathermap.org/img/wn/${icon}@2x.png`;
+    const tempEl = document.getElementById("weatherTemp");
+    const locEl = document.getElementById("weatherLocation");
+    const iconEl = document.getElementById("weatherIcon");
+
+    if (tempEl) tempEl.textContent = `${temp}°C`;
+    if (locEl) locEl.textContent = city;
+    if (iconEl) iconEl.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
     // --- DYNAMIC BACKGROUND IMAGE BASED ON WEATHER ---
     const weatherContainer = document.getElementById("weatherContainer");
@@ -164,9 +169,43 @@ async function getWeatherAndMood() {
       genre = "popular";
     }
 
-    document.getElementById("moodDescription").textContent = moodSuggestion;
-    fetchMovies(GENRES[genre]);
-  });
+    const moodDescEl = document.getElementById("moodDescription");
+    if (moodDescEl) moodDescEl.textContent = moodSuggestion;
+    fetchMovies(GENRES[genre] || GENRES.popular);
+  } catch (err) {
+    console.error("Error fetching weather by coords:", err);
+    const tempEl = document.getElementById("weatherTemp");
+    const locEl = document.getElementById("weatherLocation");
+    const moodDescEl = document.getElementById("moodDescription");
+    if (tempEl) tempEl.textContent = "26°C";
+    if (locEl) locEl.textContent = "Tanauan";
+    if (moodDescEl) moodDescEl.textContent = "Rainy coziness — grab something heartwarming 💗";
+    fetchMovies(GENRES.romance);
+  }
+}
+
+async function getWeatherAndMood() {
+  const defaultLat = 14.0844;
+  const defaultLon = 121.1500;
+  const defaultCity = "Tanauan";
+
+  if (!navigator.geolocation) {
+    getWeatherByCoords(defaultLat, defaultLon, defaultCity);
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      getWeatherByCoords(lat, lon);
+    },
+    (error) => {
+      console.warn("Geolocation blocked or unavailable, falling back to default location:", error.message);
+      getWeatherByCoords(defaultLat, defaultLon, defaultCity);
+    },
+    { timeout: 4000 }
+  );
 }
 
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
